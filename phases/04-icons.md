@@ -2,7 +2,7 @@
 
 > **MCP Calls**: 2× `mcp_figma_use_figma` (1 for Icon Component Set, 1 for Icons page)
 > **Prerequisites**: Phase 1 (Color/Size variables)
-> **Output**: Icon Component Set on _Components + ⚙️ Icons Page
+> **Output**: Icon Component Set on \_Components + ⚙️ Icons Page
 > **Verification**: Screenshot of Icons page
 
 ## Pre-check for Icons Folder
@@ -26,67 +26,68 @@ Icons MUST come from the SVG folder configured by the user.
 **Required workflow**:
 
 1. **Mapper** les noms d'icônes aux fichiers SVG réels :
+
    ```javascript
    // Flaticon UIcons Regular Rounded names → prefix "fi-rr-"
    const iconFileMap = {
      // Navigation
-     'angle-small-down': 'fi-rr-angle-small-down.svg',
-     'angle-small-up': 'fi-rr-angle-small-up.svg',
-     'angle-small-left': 'fi-rr-angle-small-left.svg',
-     'angle-small-right': 'fi-rr-angle-small-right.svg',
-     'arrow-left': 'fi-rr-arrow-left.svg',
-     'arrow-right': 'fi-rr-arrow-right.svg',
-     'bars-staggered': 'fi-rr-bars-staggered.svg',
+     "angle-small-down": "fi-rr-angle-small-down.svg",
+     "angle-small-up": "fi-rr-angle-small-up.svg",
+     "angle-small-left": "fi-rr-angle-small-left.svg",
+     "angle-small-right": "fi-rr-angle-small-right.svg",
+     "arrow-left": "fi-rr-arrow-left.svg",
+     "arrow-right": "fi-rr-arrow-right.svg",
+     "bars-staggered": "fi-rr-bars-staggered.svg",
      // Actions
-     'plus': 'fi-rr-plus.svg',
-     'minus': 'fi-rr-minus.svg',
-     'cross': 'fi-rr-cross.svg',
-     'check': 'fi-rr-check.svg',
-     'pencil': 'fi-rr-pencil.svg',
-     'trash': 'fi-rr-trash.svg',
-     'copy': 'fi-rr-copy.svg',
-     'share': 'fi-rr-share.svg',
-     'download': 'fi-rr-download.svg',
-     'upload': 'fi-rr-upload.svg',
+     plus: "fi-rr-plus.svg",
+     minus: "fi-rr-minus.svg",
+     cross: "fi-rr-cross.svg",
+     check: "fi-rr-check.svg",
+     pencil: "fi-rr-pencil.svg",
+     trash: "fi-rr-trash.svg",
+     copy: "fi-rr-copy.svg",
+     share: "fi-rr-share.svg",
+     download: "fi-rr-download.svg",
+     upload: "fi-rr-upload.svg",
      // Search
-     'search': 'fi-rr-search.svg',
-     'filter': 'fi-rr-filter.svg',
-     'bars-sort': 'fi-rr-bars-sort.svg',
+     search: "fi-rr-search.svg",
+     filter: "fi-rr-filter.svg",
+     "bars-sort": "fi-rr-bars-sort.svg",
      // User
-     'user': 'fi-rr-user.svg',
-     'users': 'fi-rr-users.svg',
-     'lock': 'fi-rr-lock.svg',
-     'unlock': 'fi-rr-unlock.svg',
-     'key': 'fi-rr-key.svg',
+     user: "fi-rr-user.svg",
+     users: "fi-rr-users.svg",
+     lock: "fi-rr-lock.svg",
+     unlock: "fi-rr-unlock.svg",
+     key: "fi-rr-key.svg",
      // Communication
-     'envelope': 'fi-rr-envelope.svg',
-     'bell': 'fi-rr-bell.svg',
-     'comment-alt': 'fi-rr-comment-alt.svg',
+     envelope: "fi-rr-envelope.svg",
+     bell: "fi-rr-bell.svg",
+     "comment-alt": "fi-rr-comment-alt.svg",
      // Content
-     'picture': 'fi-rr-picture.svg',
-     'file': 'fi-rr-file.svg',
-     'folder': 'fi-rr-folder.svg',
-     'link': 'fi-rr-link.svg',
+     picture: "fi-rr-picture.svg",
+     file: "fi-rr-file.svg",
+     folder: "fi-rr-folder.svg",
+     link: "fi-rr-link.svg",
      // Interface
-     'eye': 'fi-rr-eye.svg',
-     'eye-crossed': 'fi-rr-eye-crossed.svg',
-     'settings': 'fi-rr-settings.svg',
-     'home': 'fi-rr-home.svg',
-     'info': 'fi-rr-info.svg',
-     'exclamation': 'fi-rr-exclamation.svg',
-     'ban': 'fi-rr-ban.svg',
+     eye: "fi-rr-eye.svg",
+     "eye-crossed": "fi-rr-eye-crossed.svg",
+     settings: "fi-rr-settings.svg",
+     home: "fi-rr-home.svg",
+     info: "fi-rr-info.svg",
+     exclamation: "fi-rr-exclamation.svg",
+     ban: "fi-rr-ban.svg",
      // Data
-     'chart-line-up': 'fi-rr-chart-line-up.svg',
-     'calendar': 'fi-rr-calendar.svg',
-     'clock': 'fi-rr-clock.svg',
+     "chart-line-up": "fi-rr-chart-line-up.svg",
+     calendar: "fi-rr-calendar.svg",
+     clock: "fi-rr-clock.svg",
      // Toggles
-     'sun': 'fi-rr-sun.svg',
-     'moon': 'fi-rr-moon.svg',
-     'globe': 'fi-rr-globe.svg',
+     sun: "fi-rr-sun.svg",
+     moon: "fi-rr-moon.svg",
+     globe: "fi-rr-globe.svg",
      // Commerce
-     'shopping-cart': 'fi-rr-shopping-cart.svg',
-     'credit-card': 'fi-rr-credit-card.svg',
-     'star': 'fi-rr-star.svg',
+     "shopping-cart": "fi-rr-shopping-cart.svg",
+     "credit-card": "fi-rr-credit-card.svg",
+     star: "fi-rr-star.svg",
    };
    ```
 
@@ -95,28 +96,30 @@ Icons MUST come from the SVG folder configured by the user.
 3. **Inject** the complete SVG strings into the MCP code:
    ```javascript
    const svgStrings = {
-     'plus': '<svg xmlns="http://www.w3.org/2000/svg" ...>...</svg>', // REAL file content
+     plus: '<svg xmlns="http://www.w3.org/2000/svg" ...>...</svg>', // REAL file content
      // ...
    };
    ```
 
 **❌ FORBIDDEN**:
+
 ```javascript
 // NEVER invent paths
 const svgStrings = {
-  'plus': '<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'
+  plus: '<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
 };
 ```
 
 **✅ REQUIRED**:
+
 ```javascript
 // Use the EXACT content read from the file
 const svgStrings = {
-  'plus': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23,..." /></svg>'
+  plus: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23,..." /></svg>',
 };
 ```
 
-## Call 4a — Icon Component Set (on _Components)
+## Call 4a — Icon Component Set (on \_Components)
 
 ### Architecture
 
@@ -144,11 +147,18 @@ user, settings, bell, eye, eye-crossed, info, exclamation, trash
 // 2. Create variants
 const iconComponents = [];
 for (const iconName of iconNames) {
-  for (const size of ['xs','sm','md','lg','xl']) {
-    for (const color of ['neutral','brand','danger','warning','success','inherit']) {
+  for (const size of ["xs", "sm", "md", "lg", "xl"]) {
+    for (const color of [
+      "neutral",
+      "brand",
+      "danger",
+      "warning",
+      "success",
+      "inherit",
+    ]) {
       const comp = figma.createComponent();
       comp.name = `name=${iconName}, size=${size}, color=${color}`;
-      const sizeMap = { xs:16, sm:20, md:24, lg:32, xl:48 };
+      const sizeMap = { xs: 16, sm: 20, md: 24, lg: 32, xl: 48 };
       const s = sizeMap[size];
       comp.resize(s, s);
       comp.layoutMode = "VERTICAL";
@@ -156,18 +166,18 @@ for (const iconName of iconNames) {
       comp.counterAxisAlignItems = "CENTER";
       comp.primaryAxisSizingMode = "AUTO";
       comp.fills = [];
-      
+
       // SVG import
       const svg = figma.createNodeFromSvg(svgStrings[iconName]);
       const vector = svg.children[0];
       comp.appendChild(vector);
       svg.remove();
       vector.resize(s * 0.75, s * 0.75);
-      
+
       // Color via variable binding
-      if (color !== 'inherit') {
+      if (color !== "inherit") {
         const colorVar = colorVarMap[color];
-        vector.setBoundVariable('fills', 0, 'color', colorVar.id);
+        vector.setBoundVariable("fills", 0, "color", colorVar.id);
       }
       iconComponents.push(comp);
     }
@@ -179,16 +189,16 @@ iconSet.name = "icon";
 
 ### Color → Variable Map
 
-| color | Variable |
-|---|---|
-| neutral | `Neutral/colorTextSecondary` |
-| brand | `Primary/colorPrimary` |
-| danger | `Feedback/colorDanger` |
-| warning | `Feedback/colorWarning` |
-| success | `Feedback/colorSuccess` |
+| color   | Variable                        |
+| ------- | ------------------------------- |
+| neutral | `Neutral/colorTextSecondary`    |
+| brand   | `Primary/colorPrimary`          |
+| danger  | `Feedback/colorDanger`          |
+| warning | `Feedback/colorWarning`         |
+| success | `Feedback/colorSuccess`         |
 | inherit | fills=[] (inherits from parent) |
 
-→ **Screenshot** of _Components — verify the icon Component Set is visible.
+→ **Screenshot** of \_Components — verify the icon Component Set is visible.
 
 ## Call 4b — ⚙️ Icons Page
 
@@ -225,6 +235,7 @@ Commerce:       shopping-cart, credit-card, star
 ### SVG Import — Pattern
 
 The Plugin API code has no filesystem access. The assistant MUST:
+
 1. Read local SVGs with `cat` or `read_file` **in a SEPARATE terminal call before the MCP**
 2. Store the complete SVG content of each file
 3. Inject the **exact** SVG strings into `figma.createNodeFromSvg()` in the MCP code
@@ -253,7 +264,7 @@ done
 
 - [ ] Icons folder verified and accessible
 - [ ] SVGs read and paths extracted (30 icons minimum)
-- [ ] Icon Component Set created on _Components (15 icons × 5 sizes × 6 colors)
+- [ ] Icon Component Set created on \_Components (15 icons × 5 sizes × 6 colors)
 - [ ] ⚙️ Icons page with categorized grid
 - [ ] Icons visible (32×32 minimum, fills Neutral/colorText)
 - [ ] Screenshots verified

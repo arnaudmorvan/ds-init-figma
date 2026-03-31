@@ -150,11 +150,14 @@ Frame "User List" 1440×1200
 ```javascript
 let yPos = 0;
 // Login: 1440×900
-loginFrame.y = yPos; yPos += 900 + 200;
+loginFrame.y = yPos;
+yPos += 900 + 200;
 // Dashboard: 1440×1200
-dashFrame.y = yPos; yPos += 1200 + 200;
+dashFrame.y = yPos;
+yPos += 1200 + 200;
 // Settings: 1440×1200
-settingsFrame.y = yPos; yPos += 1200 + 200;
+settingsFrame.y = yPos;
+yPos += 1200 + 200;
 // User List: 1440×1200
 userListFrame.y = yPos;
 ```

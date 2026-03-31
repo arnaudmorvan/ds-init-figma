@@ -28,6 +28,7 @@ Use geometric shapes (rectangles, circles, dots) with DS colors.
 ## Sections
 
 ### Section 1 — Hero
+
 ```
 Frame hero (vertical, gap=32, alignItems=CENTER, padding=80)
 ├── fills={Primary/colorPrimaryBg}, cornerRadius=24
@@ -41,15 +42,18 @@ Frame hero (vertical, gap=32, alignItems=CENTER, padding=80)
 ```
 
 ### Section 2 — Stats (key figures)
+
 ```
 Frame stats (horizontal, gap=0, fill width, justify=SPACE_BETWEEN)
 ├── 4 items, each:
 │   ├── Value — 40px Extra Bold, {Primary/colorPrimary}
 │   └── Label — 14px Regular, {Neutral/colorTextSecondary}
 ```
+
 Stats: "21" Components, "120+" Design Tokens, "12" Templates, "8" Foundations (adapt to actual DS).
 
 ### Section 3 — What’s Included (feature cards)
+
 ```
 _SectionMetadata + Grid (horizontal wrap, gap=24)
 ├── 4 cards: padding=32, fills={Neutral/colorBgSecondary}, cornerRadius={Radius/lg}, border 1px
@@ -58,9 +62,11 @@ _SectionMetadata + Grid (horizontal wrap, gap=24)
 │   ├── Title — 18px Semi Bold
 │   └── Description — 14px Regular, {Neutral/colorTextSecondary}
 ```
+
 Cards: "Variables & Tokens", "Typography System", "Spacing & Sizing", "Components"
 
 ### Section 4 — Components Highlight
+
 ```
 _SectionMetadata + Row (horizontal wrap, gap=16)
 ├── 6-8 Default/MD instances in cards (padding=24, cornerRadius=12, border 1px)
@@ -68,6 +74,7 @@ _SectionMetadata + Row (horizontal wrap, gap=16)
 ```
 
 ### Section 5 — Quick Navigation
+
 ```
 _SectionMetadata + Frame badges (horizontal wrap, gap=12)
 ├── Badge/pill per page (WITHOUT emoji)
@@ -75,15 +82,18 @@ _SectionMetadata + Frame badges (horizontal wrap, gap=12)
 │   ├── Dot — rectangle 8×8, cornerRadius=4, {Primary/colorPrimary}
 │   └── Page name — 14px Medium, {Primary/colorPrimary}
 ```
+
 Pages: Colors, Typography, Size, Border, Space, Radius, Shadow, Breakpoint, Icons, Components, Layouts
 
 ### Section 6 — Configuration
+
 ```
 _SectionMetadata + Frame rows (vertical, gap=12)
 ├── Row per parameter:
 │   ├── Label — 14px Medium, {Neutral/colorTextSecondary}, width=160
 │   └── Value — 14px Semi Bold, {Neutral/colorText}
 ```
+
 Parameters: Font, Primary (swatch+hex), Secondary, Radius, Dark mode, Tiers.
 
 ## Visibility Rule
@@ -99,5 +109,5 @@ Cards MUST have background + border to be readable.
 - [ ] NO emojis (geometric shapes only)
 - [ ] Cards with visible background + border
 - [ ] Real component instances in the Highlight
-- [ ] _DesignSystemFooter at the bottom
+- [ ] \_DesignSystemFooter at the bottom
 - [ ] Screenshot verified

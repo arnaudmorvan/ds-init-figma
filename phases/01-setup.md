@@ -34,9 +34,10 @@ Default page structure ("all on one page" mode):
 **"Hybrid" mode**: by category (Actions, Inputs, Navigation…)
 
 Convention:
+
 - Emoji prefixes on system pages
 - `---` pages as visual separators
-- _Components prefixed with 🔒 (private)
+- \_Components prefixed with 🔒 (private)
 
 → **Screenshot**: verify the page list in the side panel.
 
@@ -45,11 +46,12 @@ Convention:
 ### Color Collection — with Light/Dark modes
 
 **1. Create the collection and modes:**
+
 ```javascript
-const colorCollection = figma.variables.createVariableCollection('Color');
+const colorCollection = figma.variables.createVariableCollection("Color");
 const lightModeId = colorCollection.modes[0].modeId;
-colorCollection.renameMode(lightModeId, 'Light');
-const darkMode = colorCollection.addMode('Dark');
+colorCollection.renameMode(lightModeId, "Light");
+const darkMode = colorCollection.addMode("Dark");
 const darkModeId = darkMode.modeId;
 ```
 
@@ -65,12 +67,14 @@ Color/Purple/50→950
 ```
 
 Default Blue palette:
+
 ```
 50=#EFF6FF  100=#DBEAFE  200=#BFDBFE  300=#93C5FD  400=#60A5FA
 500=#3B82F6  600=#2563EB  700=#1D4ED8  800=#1E40AF  900=#1E3A8A  950=#172554
 ```
 
 Gray palette:
+
 ```
 0=#FFFFFF  50=#F9FAFB  100=#F3F4F6  200=#E5E7EB  300=#D1D5DB  400=#9CA3AF
 500=#6B7280  600=#4B5563  700=#374151  800=#1F2937  900=#111827  950=#030712
@@ -80,33 +84,33 @@ Adapt Primary/Secondary palettes based on the user's chosen hex values.
 
 **3. Semantics (aliases, inverted in Dark) — 25 variables:**
 
-| Variable | Light | Dark |
-|---|---|---|
-| `Neutral/colorBg` | Gray/0 | Gray/950 |
-| `Neutral/colorBgElevated` | Gray/0 | Gray/900 |
-| `Neutral/colorBgSubtle` | Gray/50 | Gray/800 |
-| `Neutral/colorBgSecondary` | Gray/50 | Gray/900 |
-| `Neutral/colorText` | Gray/900 | Gray/50 |
-| `Neutral/colorTextSecondary` | Gray/600 | Gray/400 |
-| `Neutral/colorTextTertiary` | Gray/400 | Gray/500 |
-| `Neutral/colorBorder` | Gray/200 | Gray/700 |
-| `Neutral/colorBorderSubtle` | Gray/100 | Gray/800 |
-| `Primary/colorPrimary` | Blue/600 | Blue/400 |
-| `Primary/colorPrimaryHover` | Blue/500 | Blue/300 |
-| `Primary/colorPrimaryActive` | Blue/700 | Blue/500 |
-| `Primary/colorPrimaryBg` | Blue/50 | Blue/950 |
-| `Primary/colorPrimaryBorder` | Blue/200 | Blue/800 |
-| `Secondary/colorSecondary` | Purple/600 | Purple/400 |
+| Variable                        | Light      | Dark       |
+| ------------------------------- | ---------- | ---------- |
+| `Neutral/colorBg`               | Gray/0     | Gray/950   |
+| `Neutral/colorBgElevated`       | Gray/0     | Gray/900   |
+| `Neutral/colorBgSubtle`         | Gray/50    | Gray/800   |
+| `Neutral/colorBgSecondary`      | Gray/50    | Gray/900   |
+| `Neutral/colorText`             | Gray/900   | Gray/50    |
+| `Neutral/colorTextSecondary`    | Gray/600   | Gray/400   |
+| `Neutral/colorTextTertiary`     | Gray/400   | Gray/500   |
+| `Neutral/colorBorder`           | Gray/200   | Gray/700   |
+| `Neutral/colorBorderSubtle`     | Gray/100   | Gray/800   |
+| `Primary/colorPrimary`          | Blue/600   | Blue/400   |
+| `Primary/colorPrimaryHover`     | Blue/500   | Blue/300   |
+| `Primary/colorPrimaryActive`    | Blue/700   | Blue/500   |
+| `Primary/colorPrimaryBg`        | Blue/50    | Blue/950   |
+| `Primary/colorPrimaryBorder`    | Blue/200   | Blue/800   |
+| `Secondary/colorSecondary`      | Purple/600 | Purple/400 |
 | `Secondary/colorSecondaryHover` | Purple/500 | Purple/300 |
-| `Secondary/colorSecondaryBg` | Purple/50 | Purple/950 |
-| `Feedback/colorSuccess` | Green/600 | Green/400 |
-| `Feedback/colorSuccessBg` | Green/50 | Green/950 |
-| `Feedback/colorWarning` | Yellow/500 | Yellow/400 |
-| `Feedback/colorWarningBg` | Yellow/50 | Yellow/950 |
-| `Feedback/colorDanger` | Red/600 | Red/400 |
-| `Feedback/colorDangerBg` | Red/50 | Red/950 |
-| `Feedback/colorInfo` | Blue/600 | Blue/400 |
-| `Feedback/colorInfoBg` | Blue/50 | Blue/950 |
+| `Secondary/colorSecondaryBg`    | Purple/50  | Purple/950 |
+| `Feedback/colorSuccess`         | Green/600  | Green/400  |
+| `Feedback/colorSuccessBg`       | Green/50   | Green/950  |
+| `Feedback/colorWarning`         | Yellow/500 | Yellow/400 |
+| `Feedback/colorWarningBg`       | Yellow/50  | Yellow/950 |
+| `Feedback/colorDanger`          | Red/600    | Red/400    |
+| `Feedback/colorDangerBg`        | Red/50     | Red/950    |
+| `Feedback/colorInfo`            | Blue/600   | Blue/400   |
+| `Feedback/colorInfoBg`          | Blue/50    | Blue/950   |
 
 > **Note**: Blue = Primary color, Purple = Secondary color. Adapt prefixes if colors change.
 > The `*Bg` are light variants (Light=50, Dark=950).
@@ -142,6 +146,7 @@ Typography/lineHeight/relaxed   → 1.75
 ```
 
 ### Size (interactive component dimensions)
+
 ```
 Size/controlHeight/xs→xl       → 24, 32, 40, 48, 56
 Size/controlPadding/xs→xl      → 8, 12, 16, 20, 24
@@ -150,6 +155,7 @@ Size/iconSize/xs→xl            → 14, 16, 18, 20, 24
 ```
 
 ### Space
+
 ```
 Space/space/1→16               → 4, 8, 12, 16, 20, 24, 32, 40, 48, 64
 Space/Padding/paddingXS→paddingXL → 4, 8, 12, 16, 24
@@ -171,11 +177,13 @@ Radius/full   → 9999
 ```
 
 ### Border
+
 ```
 Border/width/none→thick        → 0, 1, 2, 3
 ```
 
 ### Breakpoint
+
 ```
 Breakpoint/sm→2xl              → 640, 768, 1024, 1280, 1536
 ```
@@ -188,10 +196,58 @@ Shadows are not Variables but Figma **Effect Styles**.
 
 ```javascript
 const shadows = [
-  { name: 'Shadow/sm', effects: [{type: 'DROP_SHADOW', color: {r:0,g:0,b:0,a:0.05}, offset:{x:0,y:1}, radius:2, spread:0, visible:true}] },
-  { name: 'Shadow/md', effects: [{type: 'DROP_SHADOW', color: {r:0,g:0,b:0,a:0.1}, offset:{x:0,y:4}, radius:6, spread:-1, visible:true}] },
-  { name: 'Shadow/lg', effects: [{type: 'DROP_SHADOW', color: {r:0,g:0,b:0,a:0.1}, offset:{x:0,y:10}, radius:15, spread:-3, visible:true}] },
-  { name: 'Shadow/xl', effects: [{type: 'DROP_SHADOW', color: {r:0,g:0,b:0,a:0.1}, offset:{x:0,y:20}, radius:25, spread:-5, visible:true}] },
+  {
+    name: "Shadow/sm",
+    effects: [
+      {
+        type: "DROP_SHADOW",
+        color: { r: 0, g: 0, b: 0, a: 0.05 },
+        offset: { x: 0, y: 1 },
+        radius: 2,
+        spread: 0,
+        visible: true,
+      },
+    ],
+  },
+  {
+    name: "Shadow/md",
+    effects: [
+      {
+        type: "DROP_SHADOW",
+        color: { r: 0, g: 0, b: 0, a: 0.1 },
+        offset: { x: 0, y: 4 },
+        radius: 6,
+        spread: -1,
+        visible: true,
+      },
+    ],
+  },
+  {
+    name: "Shadow/lg",
+    effects: [
+      {
+        type: "DROP_SHADOW",
+        color: { r: 0, g: 0, b: 0, a: 0.1 },
+        offset: { x: 0, y: 10 },
+        radius: 15,
+        spread: -3,
+        visible: true,
+      },
+    ],
+  },
+  {
+    name: "Shadow/xl",
+    effects: [
+      {
+        type: "DROP_SHADOW",
+        color: { r: 0, g: 0, b: 0, a: 0.1 },
+        offset: { x: 0, y: 20 },
+        radius: 25,
+        spread: -5,
+        visible: true,
+      },
+    ],
+  },
 ];
 for (const s of shadows) {
   const style = figma.createEffectStyle();

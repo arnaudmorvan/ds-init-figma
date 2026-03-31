@@ -2,8 +2,8 @@
 
 > **MCP Calls**: 1× `mcp_figma_use_figma`
 > **Prerequisites**: Phase 1 completed (file + variables created)
-> **Output**: 4 documentation components on the 🔒 _Components page
-> **Verification**: Screenshot of the _Components page
+> **Output**: 4 documentation components on the 🔒 \_Components page
+> **Verification**: Screenshot of the \_Components page
 
 ## Components to Create
 
@@ -14,11 +14,13 @@ All on the `🔒 _Components` page. These are the "layout building blocks" used 
 A professional page header, SlothUI-inspired.
 
 **Variants:**
+
 - `type=component` — for component pages (badge "Components")
 - `type=documentation` — for Foundations pages (badge "Foundations")
 - `type=elements` — for Elements sections (fixed title + description)
 
 **Structure of each variant (component and documentation):**
+
 ```
 Auto Layout vertical, gap=80, padding=40
 ├── cornerRadius=40, border 1px {Neutral/colorBorder}, fills={Neutral/colorBg}
@@ -38,6 +40,7 @@ Auto Layout vertical, gap=80, padding=40
 ```
 
 **Variant `type=elements`:**
+
 ```
 Auto Layout vertical, gap=4, padding=24/0
 ├── [title] ← "Elements", 32px Bold
@@ -60,7 +63,7 @@ Auto Layout horizontal, justify=space-between, padding=40, alignItems=CENTER
 ```javascript
 // Safe text pattern for footer
 const text = figma.createText();
-text.fontName = {family:'Inter', style:'Regular'};
+text.fontName = { family: "Inter", style: "Regular" };
 text.fontSize = 14;
 text.characters = "Design System v1.0";
 text.textAutoResize = "WIDTH_AND_HEIGHT"; // ← REQUIRED
@@ -82,6 +85,7 @@ Auto Layout horizontal, justify=space-between, alignItems=CENTER, height=38
 ### 2.4 `divider` — Main Component
 
 Simple horizontal line:
+
 ```
 Rectangle height=1, FILL width, fills={Neutral/colorBorder}, opacity=0.3
 ```
@@ -90,13 +94,17 @@ Rectangle height=1, FILL width, fills={Neutral/colorBorder}, opacity=0.3
 
 ```javascript
 // Find a variant
-const docHeaderSet = page.findOne(n => n.type === "COMPONENT_SET" && n.name === ".documentation header");
-const variant = docHeaderSet.findOne(n => n.name === "type=component");
+const docHeaderSet = page.findOne(
+  (n) => n.type === "COMPONENT_SET" && n.name === ".documentation header",
+);
+const variant = docHeaderSet.findOne((n) => n.name === "type=component");
 const inst = variant.createInstance();
 
 // Populate text fields
 function setText(instance, nodeName, text) {
-  const node = instance.findOne(n => n.name === nodeName && n.type === "TEXT");
+  const node = instance.findOne(
+    (n) => n.name === nodeName && n.type === "TEXT",
+  );
   if (node) node.characters = text;
 }
 setText(inst, "title", "Button");
@@ -112,4 +120,4 @@ setText(inst, "category label", "Components");
 - [ ] `_DesignSystemFooter` Main Component visible and populatable
 - [ ] `_SectionMetadata` Main Component with dotted line
 - [ ] `divider` Main Component
-- [ ] Screenshot verified — all 4 components visible on _Components
+- [ ] Screenshot verified — all 4 components visible on \_Components

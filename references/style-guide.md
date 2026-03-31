@@ -20,14 +20,14 @@
 - Category badge: filled pill `{Primary/colorPrimary}`, white text, cornerRadius=999
 - Breadcrumbs: DS logo 40×40 + levels 18px Bold
 
-## Footer (_DesignSystemFooter)
+## Footer (\_DesignSystemFooter)
 
 - Same rounded style as the header (cornerRadius=40)
 - Mirrored decorative gradient
 - Logo + tagline + link
 - Width = FILL in parent
 
-## Section Bars (_SectionMetadata)
+## Section Bars (\_SectionMetadata)
 
 - Height 38px
 - Left label: 14px SemiBold
@@ -64,16 +64,16 @@ Frame section (Auto Layout vertical, gap=12)
 
 ## Naming
 
-| Type | Convention | Example |
-|------|-----------|---------|
-| Public component | lowercase, no prefix | `button`, `checkbox` |
-| Sub-component | `.elements / parent / name` | `.elements / select / option` |
-| Documentation | `.documentation header` | Component Set, 3 variants |
-| Footer | `_DesignSystemFooter` | Main Component |
-| Section divider | `_SectionMetadata` | Main Component |
-| Native slot | simple name | `header`, `leading`, `content` |
-| Variable collection | PascalCase | `Color`, `Typography`, `Size` |
-| Variable | `Category/tokenName` | `Primary/colorPrimary`, `Size/controlHeight/md` |
+| Type                | Convention                  | Example                                         |
+| ------------------- | --------------------------- | ----------------------------------------------- |
+| Public component    | lowercase, no prefix        | `button`, `checkbox`                            |
+| Sub-component       | `.elements / parent / name` | `.elements / select / option`                   |
+| Documentation       | `.documentation header`     | Component Set, 3 variants                       |
+| Footer              | `_DesignSystemFooter`       | Main Component                                  |
+| Section divider     | `_SectionMetadata`          | Main Component                                  |
+| Native slot         | simple name                 | `header`, `leading`, `content`                  |
+| Variable collection | PascalCase                  | `Color`, `Typography`, `Size`                   |
+| Variable            | `Category/tokenName`        | `Primary/colorPrimary`, `Size/controlHeight/md` |
 
 ## Composition Showcase
 
@@ -98,10 +98,10 @@ Frame "Composition" (Auto Layout vertical, gap=16)
 
 SlotNodes are invisible by default. On the Layouts page, color them:
 
-| Slot | Color | Hex |
-|------|-------|-----|
-| header / topbar | light pink | #FFE0ED |
-| sidebar / nav | light purple | #EBE0FF |
-| content / main | light blue | #E0F0FF |
-| footer | light green | #E0FFED |
-| secondary | light yellow | #FFF8E0 |
+| Slot            | Color        | Hex     |
+| --------------- | ------------ | ------- |
+| header / topbar | light pink   | #FFE0ED |
+| sidebar / nav   | light purple | #EBE0FF |
+| content / main  | light blue   | #E0F0FF |
+| footer          | light green  | #E0FFED |
+| secondary       | light yellow | #FFF8E0 |

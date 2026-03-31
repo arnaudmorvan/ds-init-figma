@@ -2,12 +2,13 @@
 
 > **MCP Calls**: 1 call per component (5 calls for Tier 1)
 > **Prerequisites**: Phase 1 (Size, Color, Radius variables) + Phase 4 (Icon CS)
-> **Output**: Component Sets on 🔒 _Components
+> **Output**: Component Sets on 🔒 \_Components
 > **Verification**: Screenshot after EACH component
 
 ## Rule #1: One component per MCP call
 
 **DO NOT create all components in a single call.** Do:
+
 - Call 5a → Button
 - Call 5b → Text Field
 - Call 5c → Select
@@ -17,13 +18,13 @@
 
 Screenshot verification between each call.
 
-## Rule #1bis: One LAYER per Component Set on _Components
+## Rule #1bis: One LAYER per Component Set on \_Components
 
 **⛔ CRITICAL**: Each Component Set MUST be a DIRECT child of the `_Components` page, NOT nested inside a shared frame. Figma treats direct children of a page as "layers" in the Layers panel.
 
 ```javascript
 // ✅ CORRECT — each CS is a separate layer on the page
-const compPage = figma.root.children.find(p => p.name === '🔒 _Components');
+const compPage = figma.root.children.find((p) => p.name === "🔒 _Components");
 const buttonSet = figma.combineAsVariants(buttonVariants, compPage);
 buttonSet.name = "button";
 buttonSet.y = lastY + 200; // Vertical spacing between layers
@@ -41,10 +42,10 @@ wrapper.appendChild(buttonSet); // ← NO, CS must be a direct child of the page
 
 ```javascript
 // ✅ REQUIRED — never hardcode px values
-button.setBoundVariable('minHeight', heightVar.id);
-button.setBoundVariable('paddingLeft', paddingVar.id);
-button.setBoundVariable('paddingRight', paddingVar.id);
-button.setBoundVariable('itemSpacing', gapVar.id);
+button.setBoundVariable("minHeight", heightVar.id);
+button.setBoundVariable("paddingLeft", paddingVar.id);
+button.setBoundVariable("paddingRight", paddingVar.id);
+button.setBoundVariable("itemSpacing", gapVar.id);
 ```
 
 ## Rule #2bis: ALL colors bound to semantic variables (Dark mode)
@@ -53,57 +54,69 @@ button.setBoundVariable('itemSpacing', gapVar.id);
 
 ### Color → Variable Mapping
 
-| Color | Semantic Variable |
-|---|---|
-| White background (input, card, modal) | `Neutral/colorBgElevated` |
-| Page background | `Neutral/colorBg` |
-| Light gray background (hover, subtle) | `Neutral/colorBgSubtle` |
-| Primary text | `Neutral/colorText` |
-| Secondary text | `Neutral/colorTextSecondary` |
-| Tertiary text / disabled | `Neutral/colorTextTertiary` |
-| Borders | `Neutral/colorBorder` |
-| Subtle borders | `Neutral/colorBorderSubtle` |
-| Primary blue | `Primary/colorPrimary` |
-| Blue hover | `Primary/colorPrimaryHover` |
-| Blue active | `Primary/colorPrimaryActive` |
-| Blue light background | `Primary/colorPrimaryBg` |
-| Secondary purple | `Secondary/colorSecondary` |
-| Green success | `Feedback/colorSuccess` |
-| Yellow warning | `Feedback/colorWarning` |
-| Red danger | `Feedback/colorDanger` |
-| Blue info | `Feedback/colorInfo` |
-| Success background | `Feedback/colorSuccessBg` |
-| Warning background | `Feedback/colorWarningBg` |
-| Danger background | `Feedback/colorDangerBg` |
-| Info background | `Feedback/colorInfoBg` |
-| Icons (black) | `Neutral/colorText` |
-| White check/dot | `Neutral/colorBg` |
+| Color                                 | Semantic Variable            |
+| ------------------------------------- | ---------------------------- |
+| White background (input, card, modal) | `Neutral/colorBgElevated`    |
+| Page background                       | `Neutral/colorBg`            |
+| Light gray background (hover, subtle) | `Neutral/colorBgSubtle`      |
+| Primary text                          | `Neutral/colorText`          |
+| Secondary text                        | `Neutral/colorTextSecondary` |
+| Tertiary text / disabled              | `Neutral/colorTextTertiary`  |
+| Borders                               | `Neutral/colorBorder`        |
+| Subtle borders                        | `Neutral/colorBorderSubtle`  |
+| Primary blue                          | `Primary/colorPrimary`       |
+| Blue hover                            | `Primary/colorPrimaryHover`  |
+| Blue active                           | `Primary/colorPrimaryActive` |
+| Blue light background                 | `Primary/colorPrimaryBg`     |
+| Secondary purple                      | `Secondary/colorSecondary`   |
+| Green success                         | `Feedback/colorSuccess`      |
+| Yellow warning                        | `Feedback/colorWarning`      |
+| Red danger                            | `Feedback/colorDanger`       |
+| Blue info                             | `Feedback/colorInfo`         |
+| Success background                    | `Feedback/colorSuccessBg`    |
+| Warning background                    | `Feedback/colorWarningBg`    |
+| Danger background                     | `Feedback/colorDangerBg`     |
+| Info background                       | `Feedback/colorInfoBg`       |
+| Icons (black)                         | `Neutral/colorText`          |
+| White check/dot                       | `Neutral/colorBg`            |
 
 ### Required Binding Pattern
 
 ```javascript
 // For each colored fill:
-const colorVar = getColor('Primary/colorPrimary');
+const colorVar = getColor("Primary/colorPrimary");
 const resolved = resolveColor(colorVar); // see 06-foundations.md
-node.fills = [{type:'SOLID', color: resolved}]; // visible base color
+node.fills = [{ type: "SOLID", color: resolved }]; // visible base color
 const fills = JSON.parse(JSON.stringify(node.fills));
-fills[0] = figma.variables.setBoundVariableForPaint(fills[0], 'color', colorVar);
+fills[0] = figma.variables.setBoundVariableForPaint(
+  fills[0],
+  "color",
+  colorVar,
+);
 node.fills = fills;
 
 // For each stroke:
-const strokeVar = getColor('Neutral/colorBorder');
+const strokeVar = getColor("Neutral/colorBorder");
 const resolvedStroke = resolveColor(strokeVar);
-node.strokes = [{type:'SOLID', color: resolvedStroke}];
+node.strokes = [{ type: "SOLID", color: resolvedStroke }];
 const strokes = JSON.parse(JSON.stringify(node.strokes));
-strokes[0] = figma.variables.setBoundVariableForPaint(strokes[0], 'color', strokeVar);
+strokes[0] = figma.variables.setBoundVariableForPaint(
+  strokes[0],
+  "color",
+  strokeVar,
+);
 node.strokes = strokes;
 
 // ⚠️ INCLUDE WHITE BACKGROUNDS — they must become dark in Dark mode
 // Input backgrounds, card bg, modal bg → Neutral/colorBgElevated
 // Checkbox/radio unchecked box → Neutral/colorBgElevated
-inputRow.fills = [{type:'SOLID', color: {r:1,g:1,b:1}}];
+inputRow.fills = [{ type: "SOLID", color: { r: 1, g: 1, b: 1 } }];
 const bgFills = JSON.parse(JSON.stringify(inputRow.fills));
-bgFills[0] = figma.variables.setBoundVariableForPaint(bgFills[0], 'color', getColor('Neutral/colorBgElevated'));
+bgFills[0] = figma.variables.setBoundVariableForPaint(
+  bgFills[0],
+  "color",
+  getColor("Neutral/colorBgElevated"),
+);
 inputRow.fills = bgFills;
 ```
 
@@ -210,18 +223,18 @@ The white check mark on top creates the contrast.
 
 ```javascript
 // ✅ CHECKED = solid color + check mark
-if (checked === 'true') {
-  box.fills = [{type:'SOLID', color:{r:0.15, g:0.39, b:0.92}}]; // visible base color
-  bindFill(box, getColor('Primary/colorPrimary')); // + variable binding
+if (checked === "true") {
+  box.fills = [{ type: "SOLID", color: { r: 0.15, g: 0.39, b: 0.92 } }]; // visible base color
+  bindFill(box, getColor("Primary/colorPrimary")); // + variable binding
   box.strokes = []; // NO stroke when checked
   // Check mark SVG
   const check = figma.createVector();
-  check.vectorPaths = [{windingRule:'NONZERO', data:'M 3 8 L 7 12 L 13 4'}]; // adapted to size
+  check.vectorPaths = [{ windingRule: "NONZERO", data: "M 3 8 L 7 12 L 13 4" }]; // adapted to size
   check.strokeWeight = 2;
-  check.strokes = [{type:'SOLID', color:{r:1,g:1,b:1}}];
+  check.strokes = [{ type: "SOLID", color: { r: 1, g: 1, b: 1 } }];
   check.fills = [];
-  check.strokeCap = 'ROUND';
-  check.strokeJoin = 'ROUND';
+  check.strokeCap = "ROUND";
+  check.strokeJoin = "ROUND";
   check.resize(boxSize * 0.7, boxSize * 0.7);
   box.appendChild(check);
 }
@@ -229,9 +242,11 @@ if (checked === 'true') {
 // ❌ FORBIDDEN: box.fills = [] when checked (invisible!)
 // ❌ FORBIDDEN: same appearance for checked and unchecked
 ```
-│   └── checked : fills={Primary/colorPrimary}, check mark VECTEUR SVG
+
+│ └── checked : fills={Primary/colorPrimary}, check mark VECTEUR SVG
 └── [Label] ← Text
-```
+
+````
 
 **⚠️ The check mark MUST be an SVG vector, NOT a text character "✓".**
 
@@ -243,7 +258,7 @@ check.strokes = [{type: 'SOLID', color: {r:1,g:1,b:1}}];
 check.fills = []; // ← REQUIRED
 check.strokeCap = "ROUND";
 check.strokeJoin = "ROUND";
-```
+````
 
 ---
 
@@ -266,17 +281,17 @@ The inner white dot creates the contrast.
 
 ```javascript
 // ✅ SELECTED = solid circle + white dot
-if (selected === 'true') {
-  outer.fills = [{type:'SOLID', color:{r:0.15, g:0.39, b:0.92}}]; // base color
-  bindFill(outer, getColor('Primary/colorPrimary')); // + variable
+if (selected === "true") {
+  outer.fills = [{ type: "SOLID", color: { r: 0.15, g: 0.39, b: 0.92 } }]; // base color
+  bindFill(outer, getColor("Primary/colorPrimary")); // + variable
   outer.strokes = []; // NO stroke
   // White dot
   const dot = figma.createEllipse();
   dot.resize(dotSize, dotSize);
-  dot.fills = [{type:'SOLID', color:{r:1,g:1,b:1}}];
-  outer.layoutMode = 'VERTICAL';
-  outer.primaryAxisAlignItems = 'CENTER';
-  outer.counterAxisAlignItems = 'CENTER';
+  dot.fills = [{ type: "SOLID", color: { r: 1, g: 1, b: 1 } }];
+  outer.layoutMode = "VERTICAL";
+  outer.primaryAxisAlignItems = "CENTER";
+  outer.counterAxisAlignItems = "CENTER";
   outer.appendChild(dot);
 }
 
@@ -303,12 +318,12 @@ Shared sub-component for text field and select:
 
 Same pattern: **one MCP call per component**, screenshot after each.
 
-| Component | Main Variants | Slots |
-|---|---|---|
-| Card | variant(default\|elevated\|outline) | header, media, content, footer, actions |
-| Modal | size(sm\|md\|lg) | header, content, footer |
-| Tabs | — | tab items |
-| Alert | type(info\|success\|warning\|error) | icon, title, description, action |
+| Component | Main Variants                       | Slots                                   |
+| --------- | ----------------------------------- | --------------------------------------- |
+| Card      | variant(default\|elevated\|outline) | header, media, content, footer, actions |
+| Modal     | size(sm\|md\|lg)                    | header, content, footer                 |
+| Tabs      | —                                   | tab items                               |
+| Alert     | type(info\|success\|warning\|error) | icon, title, description, action        |
 
 ### Alert — Detailed Specification
 
@@ -343,6 +358,7 @@ Same pattern: **one MCP call per component**, screenshot after each.
 | error | red | red | ❗ SVG vector |
 
 **⚠️ KNOWN BUGS TO AVOID:**
+
 1. `counterAxisSizingMode = "FIXED"` → 10px height, crushed/overlapping alerts. **ALWAYS "AUTO".**
 2. `text-content` with `primaryAxisSizingMode = "FIXED"` → clipped text. **ALWAYS "AUTO".**
 3. `stripe` without `layoutSizingVertical = "FILL"` → tiny strip (1px). **ALWAYS "FILL".**
@@ -359,6 +375,7 @@ for (const v of alertCS.children) {
 }
 alertCS.resize(480, currentY - 20);
 ```
+
 | Badge | variant, size(sm\|md) | content |
 | Navbar | — | logo, nav-links, search, user |
 | Sidebar | collapsed(false\|true) | logo, nav-items, footer |
