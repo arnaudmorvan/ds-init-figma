@@ -70,8 +70,8 @@ Replace `YOUR_FIGMA_ACCESS_TOKEN` with your personal access token.
 1. Clone the repo
 
 ```bash
-git clone https://github.com/arnaudmorvan/initDsWithClaude.git
-cd initDsWithClaude
+git clone https://github.com/arnaudmorvan/ds-init-figma.git
+cd ds-init-figma
 ```
 
 2. Add the skill to your AI agent
