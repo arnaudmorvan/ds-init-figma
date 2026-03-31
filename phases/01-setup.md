@@ -1,21 +1,21 @@
-# Phase 1 — Setup : Fichier Figma, Pages et Variables
+# Phase 1 — Setup: Figma File, Pages and Variables
 
-> **Appels MCP** : `mcp_figma_create_new_file` + 4× `mcp_figma_use_figma`
-> **Prérequis** : Config utilisateur collectée (Phase 0)
-> **Produit** : Fichier Figma avec pages structurées + 8 collections de variables
-> **Vérification** : Screenshot de la liste des pages
+> **MCP Calls**: `mcp_figma_create_new_file` + 4× `mcp_figma_use_figma`
+> **Prerequisites**: User config collected (Phase 0)
+> **Output**: Figma file with structured pages + 8 variable collections
+> **Verification**: Screenshot of the page list
 
-## Étape 1.1 — Créer le fichier Figma
+## Step 1.1 — Create the Figma file
 
 ```tool_call
-mcp_figma_create_new_file({ name: "[Nom du DS]" })
+mcp_figma_create_new_file({ name: "[DS Name]" })
 ```
 
-Récupérer le `fileKey` pour tous les appels suivants.
+Retrieve the `fileKey` for all subsequent calls.
 
-## Étape 1.2 — Créer les pages (1 appel mcp_figma_use_figma)
+## Step 1.2 — Create pages (1 mcp_figma_use_figma call)
 
-Structure de pages par défaut (mode "tous sur une page") :
+Default page structure ("all on one page" mode):
 
 ```
 📄 👋 Welcome
@@ -29,22 +29,22 @@ Structure de pages par défaut (mode "tous sur une page") :
 📄 🔒 _Components
 ```
 
-**Mode "une page par composant"** : remplacer `Components` par des pages individuelles en minuscule (buttons, inputs, dropdown, checkbox, radio…)
+**"One page per component" mode**: replace `Components` with individual lowercase pages (buttons, inputs, dropdown, checkbox, radio…)
 
-**Mode "hybride"** : par catégorie (Actions, Inputs, Navigation…)
+**"Hybrid" mode**: by category (Actions, Inputs, Navigation…)
 
-Convention :
-- Emoji-préfixes sur les pages système
-- Pages `---` comme séparateurs visuels
-- _Components préfixé 🔒 (privé)
+Convention:
+- Emoji prefixes on system pages
+- `---` pages as visual separators
+- _Components prefixed with 🔒 (private)
 
-→ **Screenshot** : vérifier la liste des pages dans le panneau latéral.
+→ **Screenshot**: verify the page list in the side panel.
 
-## Étape 1.3 — Variables Color (1 appel)
+## Step 1.3 — Color Variables (1 call)
 
-### Collection Color — avec modes Light/Dark
+### Color Collection — with Light/Dark modes
 
-**1. Créer la collection et les modes :**
+**1. Create the collection and modes:**
 ```javascript
 const colorCollection = figma.variables.createVariableCollection('Color');
 const lightModeId = colorCollection.modes[0].modeId;
@@ -53,32 +53,32 @@ const darkMode = colorCollection.addMode('Dark');
 const darkModeId = darkMode.modeId;
 ```
 
-**2. Primitives (identiques Light/Dark) :**
+**2. Primitives (identical in Light/Dark):**
 
 ```
-Color/Blue/50→950    (11 nuances)
-Color/Gray/0→950     (12 nuances, 0=blanc pur)
+Color/Blue/50→950    (11 shades)
+Color/Gray/0→950     (12 shades, 0=pure white)
 Color/Red/50→950
 Color/Green/50→950
 Color/Yellow/50→950
 Color/Purple/50→950
 ```
 
-Palette Blue par défaut :
+Default Blue palette:
 ```
 50=#EFF6FF  100=#DBEAFE  200=#BFDBFE  300=#93C5FD  400=#60A5FA
 500=#3B82F6  600=#2563EB  700=#1D4ED8  800=#1E40AF  900=#1E3A8A  950=#172554
 ```
 
-Palette Gray :
+Gray palette:
 ```
 0=#FFFFFF  50=#F9FAFB  100=#F3F4F6  200=#E5E7EB  300=#D1D5DB  400=#9CA3AF
 500=#6B7280  600=#4B5563  700=#374151  800=#1F2937  900=#111827  950=#030712
 ```
 
-Adapter les palettes Primary/Secondary selon les hex choisis par l'utilisateur.
+Adapt Primary/Secondary palettes based on the user's chosen hex values.
 
-**3. Sémantiques (alias, inversées en Dark) — 25 variables :**
+**3. Semantics (aliases, inverted in Dark) — 25 variables:**
 
 | Variable | Light | Dark |
 |---|---|---|
@@ -108,19 +108,19 @@ Adapter les palettes Primary/Secondary selon les hex choisis par l'utilisateur.
 | `Feedback/colorInfo` | Blue/600 | Blue/400 |
 | `Feedback/colorInfoBg` | Blue/50 | Blue/950 |
 
-> **Note** : Blue = couleur Primary, Purple = couleur Secondary. Adapter les préfixes si les couleurs changent.
-> Les `*Bg` sont des variantes claires (Light=50, Dark=950).
+> **Note**: Blue = Primary color, Purple = Secondary color. Adapt prefixes if colors change.
+> The `*Bg` are light variants (Light=50, Dark=950).
 
-→ **Screenshot** : pas visuel ici, mais vérifier la collection dans Figma.
+→ **Screenshot**: not visual here, but verify the collection in Figma.
 
-## Étape 1.4 — Variables non-Color (1 appel)
+## Step 1.4 — Non-Color Variables (1 call)
 
-6 collections supplémentaires, toutes en FLOAT (pas de modes) :
+6 additional collections, all FLOAT (no modes):
 
-### Typography (16 vars FLOAT)
+### Typography (16 FLOAT vars)
 
-> **⚠️** Les variables STRING (fontFamily) ne sont PAS supportées en mode FLOAT.
-> Le nom de la police est documenté dans le doc header et la page Foundations uniquement.
+> **⚠️** STRING variables (fontFamily) are NOT supported in FLOAT mode.
+> The font name is documented in the doc header and Foundations page only.
 
 ```
 Typography/fontSize/xs          → 12
@@ -141,7 +141,7 @@ Typography/lineHeight/normal    → 1.5
 Typography/lineHeight/relaxed   → 1.75
 ```
 
-### Size (dimensions composants interactifs)
+### Size (interactive component dimensions)
 ```
 Size/controlHeight/xs→xl       → 24, 32, 40, 48, 56
 Size/controlPadding/xs→xl      → 8, 12, 16, 20, 24
@@ -157,7 +157,7 @@ Space/Padding/paddingXS→paddingXL → 4, 8, 12, 16, 24
 
 ### Radius (8 vars)
 
-Adapter les valeurs au style choisi (Sharp/Soft/Round/Full) :
+Adapt values to the chosen style (Sharp/Soft/Round/Full):
 
 ```
 Radius/none   → 0
@@ -180,11 +180,11 @@ Border/width/none→thick        → 0, 1, 2, 3
 Breakpoint/sm→2xl              → 640, 768, 1024, 1280, 1536
 ```
 
-→ **Screenshot** : vérifier que les collections apparaissent dans le panneau Variables.
+→ **Screenshot**: verify that collections appear in the Variables panel.
 
-## Étape 1.5 — Shadow Effect Styles (1 appel)
+## Step 1.5 — Shadow Effect Styles (1 call)
 
-Les ombres ne sont pas des Variables mais des **Effect Styles** Figma.
+Shadows are not Variables but Figma **Effect Styles**.
 
 ```javascript
 const shadows = [
@@ -200,15 +200,15 @@ for (const s of shadows) {
 }
 ```
 
-> **Note** : La propriété `a` est autorisée dans les `effects[].color` (c'est différent de `fills`).
+> **Note**: The `a` property is allowed in `effects[].color` (unlike `fills`).
 
-## Checklist de vérification
+## Verification Checklist
 
-- [ ] Fichier Figma créé avec le bon nom
-- [ ] Pages créées dans le bon ordre avec séparateurs
-- [ ] Collection Color avec modes Light + Dark
-- [ ] Variables primitives (Blue, Gray, Red, Green, Yellow, Purple)
-- [ ] Variables sémantiques avec aliases Light/Dark (25 : Neutral 9 + Primary 5 + Secondary 3 + Feedback 8)
-- [ ] 6 collections supplémentaires (Typography 16, Size 20, Space 15, Radius 8, Border 4, Breakpoint 5)
-- [ ] 4 Effect Styles Shadow (sm, md, lg, xl)
-- [ ] Total attendu : ~92 COLOR + ~68 FLOAT + 4 Effect Styles
+- [ ] Figma file created with the correct name
+- [ ] Pages created in the correct order with separators
+- [ ] Color collection with Light + Dark modes
+- [ ] Primitive variables (Blue, Gray, Red, Green, Yellow, Purple)
+- [ ] Semantic variables with Light/Dark aliases (25: Neutral 9 + Primary 5 + Secondary 3 + Feedback 8)
+- [ ] 6 additional collections (Typography 16, Size 20, Space 15, Radius 8, Border 4, Breakpoint 5)
+- [ ] 4 Shadow Effect Styles (sm, md, lg, xl)
+- [ ] Expected total: ~92 COLOR + ~68 FLOAT + 4 Effect Styles

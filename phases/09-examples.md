@@ -1,43 +1,43 @@
-# Phase 9 — Pages d'exemples
+# Phase 9 — Example Pages
 
-> **Appels MCP** : 1 appel par page d'exemple
-> **Prérequis** : Phase 2 (doc components) + Phase 5 (Component Sets)
-> **Produit** : Page 📐 Examples avec 4 layers (Login, Dashboard, Settings, User List)
-> **Vérification** : Screenshot de chaque layer après création
+> **MCP Calls**: 1 call per example page
+> **Prerequisites**: Phase 2 (doc components) + Phase 5 (Component Sets)
+> **Output**: Page 📐 Examples with 4 layers (Login, Dashboard, Settings, User List)
+> **Verification**: Screenshot of each layer after creation
 
-## Objectif
+## Goal
 
-Montrer des **compositions réalistes** utilisant les composants du DS.
-Contrairement au Showcase (Phase 7) qui montre les composants isolés,
-les Examples assemblent plusieurs composants en pages fonctionnelles.
+Show **realistic compositions** using the DS components.
+Unlike the Showcase (Phase 7) which displays isolated components,
+Examples assemble multiple components into functional pages.
 
-## Page Figma
+## Figma Page
 
-Créer une page `📐 Examples` entre `Components` et le séparateur `---`.
+Create a `📐 Examples` page between `Components` and the `---` separator.
 
-## Structure de la page
+## Page Structure
 
 ```
 📐 Examples (page)
-├── [Layer Login] — 1440×900, écran de connexion
-├── [Layer Dashboard] — 1440×1200, page dashboard SaaS
-├── [Layer Settings] — 1440×1200, page paramètres
-└── [Layer User List] — 1440×1200, page liste utilisateurs
+├── [Layer Login] — 1440×900, login screen
+├── [Layer Dashboard] — 1440×1200, SaaS dashboard page
+├── [Layer Settings] — 1440×1200, settings page
+└── [Layer User List] — 1440×1200, user list page
 ```
 
-**Chaque layer** = frame indépendant positionné avec un gap Y de 200px.
-**Largeur fixe** : 1440px (taille desktop réaliste, pas 2000px).
-**Pas de doc header** — ce sont des maquettes pure composition.
+**Each layer** = independent frame positioned with a 200px Y gap.
+**Fixed width**: 1440px (realistic desktop size, not 2000px).
+**No doc header** — these are pure composition mockups.
 
-## Règles communes
+## Common Rules
 
-- Fond bound à `{Neutral/colorBg}`
-- Tous les composants instanciés depuis la page `🔒 _Components`
-- Personnaliser les textes des instances (pas de "Label" ou "Placeholder" génériques)
-- Couleurs des éléments customisés bound aux variables sémantiques
-- **Pas d'emoji** — formes géométriques uniquement
+- Background bound to `{Neutral/colorBg}`
+- All components instantiated from the `🔒 _Components` page
+- Customize instance texts (no generic "Label" or "Placeholder")
+- Custom element colors bound to semantic variables
+- **No emoji** — geometric shapes only
 
-## Appel 9a — Login Page
+## Call 9a — Login Page
 
 ```
 Frame "Login" 1440×900
@@ -59,7 +59,7 @@ Frame "Login" 1440×900
     └── Button Secondary instance (size=lg, FILL width) → "Continue with Google"
 ```
 
-## Appel 9b — Dashboard Page
+## Call 9b — Dashboard Page
 
 ```
 Frame "Dashboard" 1440×1200
@@ -87,7 +87,7 @@ Frame "Dashboard" 1440×1200
 │           └── (filler)
 ```
 
-## Appel 9c — Settings Page
+## Call 9c — Settings Page
 
 ```
 Frame "Settings" 1440×1200
@@ -118,7 +118,7 @@ Frame "Settings" 1440×1200
 │       └── Alert instance (type=success) "Changes saved successfully"
 ```
 
-## Appel 9d — User List Page
+## Call 9d — User List Page
 
 ```
 Frame "User List" 1440×1200
@@ -145,7 +145,7 @@ Frame "User List" 1440×1200
 │       └── Alert (type=warning) "2 users have pending invitations"
 ```
 
-## Positionnement des layers
+## Layer Positioning
 
 ```javascript
 let yPos = 0;

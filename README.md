@@ -1,37 +1,37 @@
 # initDsWithClaude
 
-Skill Copilot pour créer un **Design System complet dans Figma** via l'API Plugin et les outils MCP.
+Copilot Skill to create a **complete Design System in Figma** via the Plugin API and MCP tools.
 
-## Principe
+## Principle
 
-Ce skill guide un agent IA (Copilot / Claude) à travers une série de phases pour générer un Design System Figma structuré : variables, tokens, composants, pages de documentation, layouts et showcase.
+This skill guides an AI agent (Copilot / Claude) through a series of phases to generate a structured Figma Design System: variables, tokens, components, documentation pages, layouts, and showcase.
 
 ## Structure
 
 ```
-SKILL.md              # Point d'entrée du skill
+SKILL.md              # Skill entry point
 phases/
-  01-setup.md         # Création du fichier Figma, variables, tokens
-  02-doc-components.md # Composants de documentation (Header, Section, etc.)
-  03-layouts-templates.md # Templates de pages et layouts
-  04-icons.md         # Système d'icônes
-  05-components.md    # Composants UI (Button, Input, Alert, etc.)
-  06-foundations.md   # Pages fondations (couleurs, typographie, spacing)
-  07-showcase.md      # Pages showcase par composant
-  08-welcome.md       # Page d'accueil du DS
+  01-setup.md         # Figma file creation, variables, tokens
+  02-doc-components.md # Documentation components (Header, Section, etc.)
+  03-layouts-templates.md # Page templates and layouts
+  04-icons.md         # Icon system
+  05-components.md    # UI components (Button, Input, Alert, etc.)
+  06-foundations.md   # Foundations pages (colors, typography, spacing)
+  07-showcase.md      # Showcase pages per component
+  08-welcome.md       # DS welcome page
 references/
-  plugin-api-patterns.md # Patterns Figma Plugin API testés
-  rules.md            # Règles et contraintes
-  style-guide.md      # Guide de style visuel
+  plugin-api-patterns.md # Tested Figma Plugin API patterns
+  rules.md            # Rules and constraints
+  style-guide.md      # Visual style guide
 ```
 
-## Utilisation
+## Usage
 
-1. Ajouter ce dossier dans `~/.copilot/skills/ds-init/`
-2. Dans VS Code avec Copilot, invoquer le skill avec le nom du projet
-3. Le skill pose les questions de configuration (polices, couleurs, arrondis, ombres, spacing, breakpoints) puis crée le fichier Figma phase par phase
+1. Add this folder to `~/.copilot/skills/ds-init/`
+2. In VS Code with Copilot (or any AI IDE with MCP support), invoke the skill with the project name
+3. The skill asks configuration questions (fonts, colors, radii, shadows, spacing, breakpoints) then creates the Figma file phase by phase
 
-## Prérequis
+## Prerequisites
 
-- VS Code avec GitHub Copilot
-- Serveur MCP Figma configuré (accès API Plugin)
+- AI IDE with agent capabilities (VS Code + GitHub Copilot, Cursor, Windsurf, etc.)
+- Figma MCP server configured (Plugin API access)

@@ -1,28 +1,28 @@
-# Règles critiques — Figma Plugin API pour ds-init
+# Critical Rules — Figma Plugin API for ds-init
 
-> Ces règles provoquent des **erreurs silencieuses ou des régressions visuelles** si ignorées.
-> Chaque règle a été découverte après un bug réel et documentée.
+> These rules cause **silent errors or visual regressions** if ignored.
+> Each rule was discovered after a real bug and documented.
 
-## 1. Auto Layout — HUG Content OBLIGATOIRE
+## 1. Auto Layout — HUG Content MANDATORY
 
-Tout frame avec `layoutMode` DOIT avoir `primaryAxisSizingMode = "AUTO"` (HUG content).
+Every frame with `layoutMode` MUST have `primaryAxisSizingMode = "AUTO"` (HUG content).
 
-**Exceptions** : frames d'écran simulant un viewport (1440×900).
+**Exceptions**: screen frames simulating a viewport (1440×900).
 
 ```javascript
-// ✅ Pattern sûr
+// ✅ Safe pattern
 frame.layoutMode = "VERTICAL";
 frame.counterAxisSizingMode = "FIXED";
 frame.resize(2000, 10); // width de page
-frame.primaryAxisSizingMode = "AUTO"; // TOUJOURS après resize()
+frame.primaryAxisSizingMode = "AUTO"; // ALWAYS after resize()
 frame.clipsContent = false;
 ```
 
-**Piège** : `resize(w, h)` force `primaryAxisSizingMode = "FIXED"` → toujours remettre `"AUTO"` après.
+**Pitfall**: `resize(w, h)` forces `primaryAxisSizingMode = "FIXED"` → always reset to `"AUTO"` afterwards.
 
-## 2. FILL après appendChild — Ordre obligatoire
+## 2. FILL after appendChild — Mandatory Order
 
-`layoutSizingHorizontal/Vertical = "FILL"` ne fonctionne QUE sur un enfant déjà rattaché.
+`layoutSizingHorizontal/Vertical = "FILL"` only works on an already attached child.
 
 ```javascript
 // ❌ CRASH
@@ -34,17 +34,17 @@ parent.appendChild(child);
 child.layoutSizingHorizontal = "FILL";
 ```
 
-## 3. Fills — Pas de propriété `a` (alpha)
+## 3. Fills — No `a` property (alpha)
 
 ```javascript
 // ❌ "Unrecognized key(s) in object: 'a'"
 frame.fills = [{type: 'SOLID', color: {r:1, g:1, b:1, a: 0.7}}];
 
-// ✅ Utiliser opacity sur le fill
+// ✅ Use opacity on the fill
 frame.fills = [{type: 'SOLID', color: {r:1, g:1, b:1}, opacity: 0.7}];
 ```
 
-## 4. strokeAlign singulier
+## 4. strokeAlign singular
 
 ```javascript
 // ❌ TypeError: object is not extensible
@@ -54,7 +54,7 @@ frame.strokesAlign = "INSIDE";
 frame.strokeAlign = "INSIDE";
 ```
 
-## 5. textAlignHorizontal (pas textAlign)
+## 5. textAlignHorizontal (not textAlign)
 
 ```javascript
 // ❌ read-only, causes error
@@ -64,62 +64,62 @@ text.textAlign = "CENTER";
 text.textAlignHorizontal = "CENTER";
 ```
 
-## 6. Dark Mode — Activation explicite obligatoire
+## 6. Dark Mode — Explicit Activation Mandatory
 
-Les variables Dark ne s'activent **PAS** automatiquement. Il faut appeler `setExplicitVariableModeForCollection()` sur **chaque** frame qui doit afficher en dark.
+Dark variables do **NOT** activate automatically. You must call `setExplicitVariableModeForCollection()` on **every** frame that needs to display in dark.
 
 ```javascript
 const collections = await figma.variables.getLocalVariableCollectionsAsync();
 const colorCol = collections.find(c => c.name === 'Color');
 const darkModeId = colorCol.modes.find(m => m.name === 'Dark').modeId;
 
-// ⚠️ CETTE LIGNE EST CRITIQUE — sans elle, frame = Light
+// ⚠️ THIS LINE IS CRITICAL — without it, frame = Light
 darkFrame.setExplicitVariableModeForCollection(colorCol.id, darkModeId);
 
-// Lier le fond à la variable sémantique
+// Bind background to semantic variable
 const neutralBgVar = allVars.find(v => v.name === 'Neutral/colorBg');
 darkFrame.setBoundVariable('fills', 0, 'color', neutralBgVar.id);
 ```
 
-**Sans cet appel** : fond blanc, texte noir, dark mode invisible.
+**Without this call**: white background, black text, dark mode invisible.
 
-## 7. Vecteurs — fills = [] obligatoire
+## 7. Vectors — fills = [] mandatory
 
-Les vecteurs créés via `figma.createVector()` ont un remplissage noir par défaut.
+Vectors created via `figma.createVector()` have a black fill by default.
 
 ```javascript
 const check = figma.createVector();
-check.fills = [];  // ← OBLIGATOIRE pour les traits (strokes only)
+check.fills = [];  // ← MANDATORY for stroke-only shapes
 check.strokes = [{type: 'SOLID', color: {r:1,g:1,b:1}}];
 ```
 
-## 8. setCurrentPageAsync (pas d'assignation directe)
+## 8. setCurrentPageAsync (no direct assignment)
 
 ```javascript
-// ❌ INTERDIT
+// ❌ FORBIDDEN
 figma.currentPage = myPage;
 
 // ✅ CORRECT
 await figma.setCurrentPageAsync(myPage);
 ```
 
-## 9. Composants invisibles sur fond blanc
+## 9. Invisible Components on White Background
 
-**Cause #1 de régressions visuelles.** Les composants formulaire DOIVENT avoir des strokes visibles :
+**#1 cause of visual regressions.** Form components MUST have visible strokes:
 
-| Composant | Problème sans strokes | Fix |
+| Component | Problem without strokes | Fix |
 |---|---|---|
-| Text Field | Rectangle blanc invisible | `strokes=[{Neutral/colorBorder}], strokeWeight=1, strokeAlign="INSIDE"` |
-| Select | Idem | Idem |
-| Button Secondary | Pas de contour | Ajouter stroke `{Neutral/colorBorder}` |
-| Button Ghost | Texte invisible si colorText=noir | `text.fills = [{Primary/colorPrimary}]` |
-| Card default | Rectangle blanc invisible | Ajouter shadow OU stroke |
+| Text Field | White rectangle invisible | `strokes=[{Neutral/colorBorder}], strokeWeight=1, strokeAlign="INSIDE"` |
+| Select | Same | Same |
+| Button Secondary | No outline | Add stroke `{Neutral/colorBorder}` |
+| Button Ghost | Invisible text if colorText=black | `text.fills = [{Primary/colorPrimary}]` |
+| Card default | White rectangle invisible | Add shadow OR stroke |
 
-Appliquer sur **TOUS les variants** (y compris state=Default, status=None).
+Apply on **ALL variants** (including state=Default, status=None).
 
-## 10. Positionnement des frames sur une page
+## 10. Frame Positioning on a Page
 
-Figma démarre tous les frames à `x=0, y=0`. Sans positionnement explicite, ils se superposent.
+Figma starts all frames at `x=0, y=0`. Without explicit positioning, they overlap.
 
 ```javascript
 let currentX = 0;
@@ -135,7 +135,7 @@ frame2.x = currentX;
 frame2.y = 0;
 ```
 
-## 11. Fonts — Charger avant toute opération texte
+## 11. Fonts — Load Before Any Text Operation
 
 ```javascript
 await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
@@ -145,15 +145,15 @@ await figma.loadFontAsync({ family: 'Inter', style: 'Bold' });
 await figma.loadFontAsync({ family: 'Inter', style: 'Extra Bold' });
 ```
 
-## 12. Slots — createSlot() N'EXISTE PAS
+## 12. Slots — createSlot() DOES NOT EXIST
 
-**⛔ `createSlot()` n'est PAS disponible** dans le Plugin API Figma.
-L'appeler ne lève pas d'erreur visible mais ne crée rien → composants vides.
+**⛔ `createSlot()` is NOT available** in the Figma Plugin API.
+Calling it doesn't throw a visible error but creates nothing → empty components.
 
-Les "slots" doivent être simulés par des **frames colorées nommées** :
+Slots must be simulated with **colored named frames**:
 
 ```javascript
-// ✅ CORRECT — Frame colorée comme slot
+// ✅ CORRECT — Colored frame as slot
 function createSlotFrame(name, opts = {}) {
   const slot = figma.createFrame();
   slot.name = name;
@@ -178,85 +178,85 @@ function createSlotFrame(name, opts = {}) {
   return slot;
 }
 
-// ❌ INTERDIT — n'existe pas
+// ❌ FORBIDDEN — does not exist
 const slot = comp.createSlot(); // silently fails
 ```
 
-Voir les couleurs de slots dans style-guide.md.
+See slot colors in style-guide.md.
 
-## 13. Detach avant appendChild dans les instances
+## 13. Detach Before appendChild in Instances
 
-On ne peut PAS ajouter d'enfants dans une instance. Toujours détacher d'abord.
+You CANNOT add children to an instance. Always detach first.
 
 ```javascript
 const inst = templateComponent.createInstance();
-const frame = inst.detachInstance(); // → frame éditable
-// Maintenant on peut appendChild dans les slots
+const frame = inst.detachInstance(); // → editable frame
+// Now we can appendChild into the slots
 ```
 
-## 14. Texte large — textAutoResize = "HEIGHT"
+## 14. Large Text — textAutoResize = "HEIGHT"
 
-Pour les textes > 24px, utiliser `textAutoResize = "HEIGHT"` (largeur fixe, hauteur auto) pour éviter le clipping.
+For text > 24px, use `textAutoResize = "HEIGHT"` (fixed width, auto height) to avoid clipping.
 
-## 15. Vérification après chaque appel
+## 15. Verification After Each Call
 
-**Règle d'or** : Screenshot + vérification **immédiatement** après chaque `mcp_figma_use_figma`.
+**Golden rule**: Screenshot + verification **immediately** after each `mcp_figma_use_figma`.
 
 ```
-APRÈS CHAQUE appel mcp_figma_use_figma :
-1. get_screenshot de la page modifiée
-2. Vérifier : éléments visibles ? superpositions ? hauteurs effondrées ?
-3. Si problème → corriger AVANT de passer à l'appel suivant
+AFTER EACH mcp_figma_use_figma call:
+1. get_screenshot of the modified page
+2. Verify: elements visible? overlaps? collapsed heights?
+3. If problem → fix BEFORE moving to the next call
 ```
 
-## 16. Un LAYER par Component Set sur _Components
+## 16. One LAYER per Component Set on _Components
 
-Chaque Component Set créé avec `combineAsVariants()` DOIT être un **enfant direct** de la page `_Components`. Pas de frame parent commun.
+Each Component Set created with `combineAsVariants()` MUST be a **direct child** of the `_Components` page. No shared parent frame.
 
-Dans le panel Layers de Figma, chaque Component Set doit apparaître comme un layer séparé : `button`, `text field`, `select`, `checkbox`, `radio`.
+In Figma's Layers panel, each Component Set should appear as a separate layer: `button`, `text field`, `select`, `checkbox`, `radio`.
 
 ```javascript
 // ✅ CORRECT
-const buttonSet = figma.combineAsVariants(variants, compPage); // direct sur la page
+const buttonSet = figma.combineAsVariants(variants, compPage); // directly on the page
 
-// ❌ INTERDIT
-wrapper.appendChild(buttonSet); // dans un frame parent
+// ❌ FORBIDDEN
+wrapper.appendChild(buttonSet); // inside a parent frame
 ```
 
-## 17. Swatches de couleur — Résoudre la valeur réelle
+## 17. Color Swatches — Resolve the Actual Value
 
-Les variables bindées ne changent pas le fill visuel de base dans le code MCP.
-Pour que les swatches de couleur soient **visibles dans les screenshots**, il faut :
+Bound variables don't change the visual base fill in MCP code.
+For color swatches to be **visible in screenshots**, you must:
 
-1. Résoudre la valeur réelle de la variable (via `valuesByMode`)
-2. L'appliquer comme fill de base (couleur Figma native)
-3. PUIS binder la variable par-dessus
+1. Resolve the actual variable value (via `valuesByMode`)
+2. Apply it as the base fill (native Figma color)
+3. THEN bind the variable on top
 
 ```javascript
-// ❌ Invisible dans screenshot (fill gris + binding)
+// ❌ Invisible in screenshot (gray fill + binding)
 swatch.fills = [{type:'SOLID', color:{r:0.9,g:0.9,b:0.9}}];
 bindFill(swatch, v);
 
-// ✅ Visible (fill résolu + binding)
+// ✅ Visible (resolved fill + binding)
 const resolved = resolveColor(v, allVars, collections);
 swatch.fills = [{type:'SOLID', color: resolved}];
 bindFill(swatch, v);
 ```
 
-## 18. Texte dans les composants — Anti-clipping
+## 18. Text in Components — Anti-clipping
 
-Tout texte dans un composant (footer, header, card) DOIT avoir :
-- `textAutoResize = "WIDTH_AND_HEIGHT"` (texte libre)
-- OU `textAutoResize = "HEIGHT"` + largeur fixe/FILL (texte dans un layout)
+All text in a component (footer, header, card) MUST have:
+- `textAutoResize = "WIDTH_AND_HEIGHT"` (free text)
+- OR `textAutoResize = "HEIGHT"` + fixed/FILL width (text in a layout)
 
-**JAMAIS** laisser `textAutoResize = "NONE"` (défaut) qui clippe le texte.
+**NEVER** leave `textAutoResize = "NONE"` (default) which clips the text.
 
 ```javascript
-// ✅ Texte dans un auto layout
+// ✅ Text in an auto layout
 parent.appendChild(text);
 text.layoutSizingHorizontal = "FILL";
 text.textAutoResize = "HEIGHT";
 
-// ✅ Texte libre
+// ✅ Free text
 text.textAutoResize = "WIDTH_AND_HEIGHT";
 ```

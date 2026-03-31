@@ -1,11 +1,11 @@
-# Figma Plugin API — Patterns réutilisables
+# Figma Plugin API — Reusable Patterns
 
-> Snippets de code testés pour les opérations courantes.
-> Copier-coller directement dans `mcp_figma_use_figma`.
+> Tested code snippets for common operations.
+> Copy-paste directly into `mcp_figma_use_figma`.
 
-## Helpers de base
+## Basic Helpers
 
-### hexToRgb — Conversion hex → Figma color
+### hexToRgb — Hex to Figma color conversion
 
 ```javascript
 function hexToRgb(hex) {
@@ -18,7 +18,7 @@ function hexToRgb(hex) {
 }
 ```
 
-### Création d'un frame page principal
+### Main page frame creation
 
 ```javascript
 async function createPageFrame(pageName, width = 2000) {
@@ -39,7 +39,7 @@ async function createPageFrame(pageName, width = 2000) {
 }
 ```
 
-### Création d'une section (layer)
+### Section (layer) creation
 
 ```javascript
 function createSection(name, width = 1952) {
@@ -56,7 +56,7 @@ function createSection(name, width = 1952) {
 }
 ```
 
-### Création d'un texte
+### Text creation
 
 ```javascript
 async function createText(chars, fontSize, fontStyle = 'Regular', colorVar = null) {
@@ -71,9 +71,9 @@ async function createText(chars, fontSize, fontStyle = 'Regular', colorVar = nul
 }
 ```
 
-## Slots — Frames colorées nommées
+## Slots — Colored Named Frames
 
-> `createSlot()` **N'EXISTE PAS**. Simuler les slots avec des frames colorées.
+> `createSlot()` **DOES NOT EXIST**. Simulate slots with colored frames.
 
 ```javascript
 const SLOT_COLORS = {
@@ -115,11 +115,11 @@ function createSlotFrame(name, opts = {}) {
 }
 ```
 
-Après `parent.appendChild(slot)` → appliquer `layoutSizingHorizontal = "FILL"` etc.
+After `parent.appendChild(slot)` → apply `layoutSizingHorizontal = "FILL"` etc.
 
-## Variables — Binding fills/strokes
+## Variables — Binding Fills/Strokes
 
-### bindFill / bindStroke — Lier une couleur à une variable
+### bindFill / bindStroke — Bind a color to a variable
 
 ```javascript
 function bindFill(node, varObj) {
@@ -137,10 +137,10 @@ function bindStroke(node, varObj) {
 }
 ```
 
-### resolveColor — Résoudre la valeur réelle d'une variable COLOR
+### resolveColor — Resolve the actual value of a COLOR variable
 
-**⚠️ ESSENTIEL pour les swatches Foundations** — le binding variable seul ne garantit pas
-que le fill de base soit visible. Résoudre la valeur et l'appliquer comme fill, PUIS binder.
+**⚠️ ESSENTIAL for Foundations swatches** — variable binding alone doesn't guarantee
+that the base fill is visible. Resolve the value and apply as fill, THEN bind.
 
 ```javascript
 function resolveColor(varObj, allVars, collections) {
@@ -150,7 +150,7 @@ function resolveColor(varObj, allVars, collections) {
   const modeId = col.modes[0].modeId; // Light mode
   const val = varObj.valuesByMode[modeId];
   if (val && val.r !== undefined) return val;
-  // Si alias, résoudre
+  // If alias, resolve
   if (val && val.type === 'VARIABLE_ALIAS') {
     const target = allVars.find(v => v.id === val.id);
     if (target) return resolveColor(target, allVars, collections);
@@ -158,15 +158,15 @@ function resolveColor(varObj, allVars, collections) {
   return {r: 0.9, g: 0.9, b: 0.9};
 }
 
-// Usage pour swatch :
+// Usage for swatch:
 const resolved = resolveColor(v, allVars, collections);
 swatch.fills = [{type: 'SOLID', color: resolved}];
 if (v) bindFill(swatch, v);
 ```
 
-## Variables — Création
+## Variables — Creation
 
-### Créer une variable COLOR
+### Create a COLOR variable
 
 ```javascript
 async function createColorVar(collection, name, hexLight, hexDark, lightModeId, darkModeId) {
@@ -177,7 +177,7 @@ async function createColorVar(collection, name, hexLight, hexDark, lightModeId, 
 }
 ```
 
-### Créer une variable sémantique (alias)
+### Create a semantic variable (alias)
 
 ```javascript
 function createSemanticVar(collection, name, lightPrimitive, darkPrimitive, lightModeId, darkModeId) {
@@ -188,7 +188,7 @@ function createSemanticVar(collection, name, lightPrimitive, darkPrimitive, ligh
 }
 ```
 
-### Créer une variable FLOAT
+### Create a FLOAT variable
 
 ```javascript
 function createFloatVar(collection, name, value) {
@@ -198,9 +198,9 @@ function createFloatVar(collection, name, value) {
 }
 ```
 
-## Composants — Patterns
+## Components — Patterns
 
-### Lier les dimensions d'un composant aux variables Size
+### Bind component dimensions to Size variables
 
 ```javascript
 function bindSizeVars(node, sizeKey, sizeVarMap) {
@@ -217,7 +217,7 @@ function bindSizeVars(node, sizeKey, sizeVarMap) {
 }
 ```
 
-### Créer un check mark vectoriel (checkbox)
+### Create a vector check mark (checkbox)
 
 ```javascript
 function createCheckMark(size) {
@@ -238,7 +238,7 @@ function createCheckMark(size) {
 }
 ```
 
-### Créer un chevron SVG
+### Create a chevron SVG
 
 ```javascript
 function createChevron(direction = 'down', size = 16) {
@@ -248,7 +248,7 @@ function createChevron(direction = 'down', size = 16) {
   };
   const node = figma.createNodeFromSvg(paths[direction]);
   node.resize(size, size);
-  // Fixer la couleur du path enfant
+  // Fix child path color
   const path = node.findOne(n => n.type === 'VECTOR');
   if (path) {
     path.fills = [];
@@ -259,7 +259,7 @@ function createChevron(direction = 'down', size = 16) {
 }
 ```
 
-### Importer un SVG Flaticon en composant
+### Import a Flaticon SVG as component
 
 ```javascript
 function importSvgAsComponent(svgString, name, size = 24) {
@@ -282,7 +282,7 @@ function importSvgAsComponent(svgString, name, size = 24) {
 
 ## Showcase — Patterns
 
-### Label de section showcase
+### Showcase section label
 
 ```javascript
 async function createShowcaseLabel(text) {
@@ -311,7 +311,7 @@ async function createShowcaseLabel(text) {
 }
 ```
 
-### Frame Showcase Dark avec mode explicite
+### Dark Showcase frame with explicit mode
 
 ```javascript
 async function createDarkShowcase(width = 1776) {
@@ -335,7 +335,7 @@ async function createDarkShowcase(width = 1776) {
   frame.cornerRadius = 16;
   frame.clipsContent = false;
   
-  // ⚠️ CRITIQUE
+  // ⚠️ CRITICAL
   frame.setExplicitVariableModeForCollection(colorCol.id, darkModeId);
   frame.fills = [{type: 'SOLID', color: {r: 0.1, g: 0.1, b: 0.1}}];
   if (bgVar) frame.setBoundVariable('fills', 0, 'color', bgVar.id);
@@ -344,7 +344,7 @@ async function createDarkShowcase(width = 1776) {
 }
 ```
 
-### Colorer les slots dans les templates (page Layouts)
+### Color slots in templates (Layouts page)
 
 ```javascript
 async function colorSlot(instance, slotName, color, label) {
@@ -361,12 +361,12 @@ async function colorSlot(instance, slotName, color, label) {
   slot.appendChild(txt);
 }
 
-// Palette de couleurs pour les slots :
+// Slot color palette:
 const SLOT_COLORS = {
-  header:  {r: 1.0, g: 0.88, b: 0.93}, // rose
-  sidebar: {r: 0.92, g: 0.88, b: 1.0},  // violet
-  content: {r: 0.88, g: 0.94, b: 1.0},  // bleu
-  footer:  {r: 0.88, g: 1.0, b: 0.93},  // vert
-  other:   {r: 1.0, g: 0.97, b: 0.88},  // jaune
+  header:  {r: 1.0, g: 0.88, b: 0.93}, // pink
+  sidebar: {r: 0.92, g: 0.88, b: 1.0},  // purple
+  content: {r: 0.88, g: 0.94, b: 1.0},  // blue
+  footer:  {r: 0.88, g: 1.0, b: 0.93},  // green
+  other:   {r: 1.0, g: 0.97, b: 0.88},  // yellow
 };
 ```

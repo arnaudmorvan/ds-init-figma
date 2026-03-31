@@ -1,33 +1,33 @@
-# Phase 4 — Icônes
+# Phase 4 — Icons
 
-> **Appels MCP** : 2× `mcp_figma_use_figma` (1 pour Icon Component Set, 1 pour page Icons)
-> **Prérequis** : Phase 1 (variables Color/Size)
-> **Produit** : Icon Component Set sur _Components + Page ⚙️ Icons
-> **Vérification** : Screenshot page Icons
+> **MCP Calls**: 2× `mcp_figma_use_figma` (1 for Icon Component Set, 1 for Icons page)
+> **Prerequisites**: Phase 1 (Color/Size variables)
+> **Output**: Icon Component Set on _Components + ⚙️ Icons Page
+> **Verification**: Screenshot of Icons page
 
-## Vérification préalable du dossier icônes
+## Pre-check for Icons Folder
 
-**Avant de commencer**, vérifier que le dossier d'icônes existe :
+**Before starting**, verify the icons folder exists:
 
 ```bash
 ls "/Users/arnaudmorvan/Dropbox/uicons-regular-rounded/svg/" | head -5
 ```
 
-- **Si existe** → continuer avec ces SVGs
-- **Si absent** → demander à l'utilisateur (via `vscode_askQuestions` ou chat) :
-  - Quelle bibliothèque ? (Flaticon UIcons, Lucide, Heroicons, autre)
-  - Chemin absolu vers le dossier SVG
+- **If exists** → continue with these SVGs
+- **If missing** → ask the user (via chat or interactive form):
+  - Which library? (Flaticon UIcons, Lucide, Heroicons, other)
+  - Absolute path to the SVG folder
 
-## ⛔ RÈGLE ABSOLUE — Utiliser les VRAIS SVGs, jamais des paths inline
+## ⛔ ABSOLUTE RULE — Use REAL SVGs, never inline paths
 
-**INTERDIT** de dessiner des icônes à la main avec des paths simplifiés (cercles, lignes basiques).
-Les icônes DOIVENT venir du dossier SVG configuré par l'utilisateur.
+**FORBIDDEN** to draw icons by hand with simplified paths (circles, basic lines).
+Icons MUST come from the SVG folder configured by the user.
 
-**Workflow obligatoire** :
+**Required workflow**:
 
 1. **Mapper** les noms d'icônes aux fichiers SVG réels :
    ```javascript
-   // Noms Flaticon UIcons Regular Rounded → préfixe "fi-rr-"
+   // Flaticon UIcons Regular Rounded names → prefix "fi-rr-"
    const iconFileMap = {
      // Navigation
      'angle-small-down': 'fi-rr-angle-small-down.svg',
@@ -48,11 +48,11 @@ Les icônes DOIVENT venir du dossier SVG configuré par l'utilisateur.
      'share': 'fi-rr-share.svg',
      'download': 'fi-rr-download.svg',
      'upload': 'fi-rr-upload.svg',
-     // Recherche
+     // Search
      'search': 'fi-rr-search.svg',
      'filter': 'fi-rr-filter.svg',
      'bars-sort': 'fi-rr-bars-sort.svg',
-     // Utilisateur
+     // User
      'user': 'fi-rr-user.svg',
      'users': 'fi-rr-users.svg',
      'lock': 'fi-rr-lock.svg',
@@ -62,7 +62,7 @@ Les icônes DOIVENT venir du dossier SVG configuré par l'utilisateur.
      'envelope': 'fi-rr-envelope.svg',
      'bell': 'fi-rr-bell.svg',
      'comment-alt': 'fi-rr-comment-alt.svg',
-     // Contenu
+     // Content
      'picture': 'fi-rr-picture.svg',
      'file': 'fi-rr-file.svg',
      'folder': 'fi-rr-folder.svg',
@@ -90,58 +90,58 @@ Les icônes DOIVENT venir du dossier SVG configuré par l'utilisateur.
    };
    ```
 
-2. **Lire** TOUS les fichiers SVG avec `cat` **AVANT** l'appel MCP (voir commande bash complète dans la section "Import SVG — Pattern" plus bas)
+2. **Read** ALL SVG files with `cat` **BEFORE** the MCP call (see full bash command in the "SVG Import — Pattern" section below)
 
-3. **Injecter** les strings SVG complètes dans le code MCP :
+3. **Inject** the complete SVG strings into the MCP code:
    ```javascript
    const svgStrings = {
-     'plus': '<svg xmlns="http://www.w3.org/2000/svg" ...>...</svg>', // contenu RÉEL du fichier
+     'plus': '<svg xmlns="http://www.w3.org/2000/svg" ...>...</svg>', // REAL file content
      // ...
    };
    ```
 
-**❌ INTERDIT** :
+**❌ FORBIDDEN**:
 ```javascript
-// Ne JAMAIS inventer des paths
+// NEVER invent paths
 const svgStrings = {
   'plus': '<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'
 };
 ```
 
-**✅ OBLIGATOIRE** :
+**✅ REQUIRED**:
 ```javascript
-// Utiliser le contenu EXACT lu depuis le fichier
+// Use the EXACT content read from the file
 const svgStrings = {
   'plus': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23,..." /></svg>'
 };
 ```
 
-## Appel 4a — Icon Component Set (sur _Components)
+## Call 4a — Icon Component Set (on _Components)
 
 ### Architecture
 
 ```
 🔶 icon (Component Set)
 ├── Variants :
-│   ├── name = plus | search | check | cross | angle-small-down | angle-small-right | user | settings | bell | eye | eye-crossed | info | exclamation | trash | (15 icônes minimum)
+│   ├── name = plus | search | check | cross | angle-small-down | angle-small-right | user | settings | bell | eye | eye-crossed | info | exclamation | trash | (15 icons minimum)
 │   ├── size = xs(16) | sm(20) | md(24) | lg(32) | xl(48)
 │   └── color = neutral | brand | danger | warning | success | inherit
 ```
 
-### Icônes prioritaires (15 minimum pour le Component Set)
+### Priority Icons (15 minimum for the Component Set)
 
 ```
 plus, minus, search, check, cross, angle-small-down, angle-small-right,
 user, settings, bell, eye, eye-crossed, info, exclamation, trash
 ```
 
-### Pattern de création
+### Creation Pattern
 
 ```javascript
-// 1. Lire les SVGs (via terminal, pas le Plugin API)
-// L'assistant lit les fichiers SVG avec ses outils et injecte les strings
+// 1. Read SVGs (via terminal, not Plugin API)
+// The assistant reads SVG files with its tools and injects the strings
 
-// 2. Créer les variants
+// 2. Create variants
 const iconComponents = [];
 for (const iconName of iconNames) {
   for (const size of ['xs','sm','md','lg','xl']) {
@@ -164,7 +164,7 @@ for (const iconName of iconNames) {
       svg.remove();
       vector.resize(s * 0.75, s * 0.75);
       
-      // Couleur via variable binding
+      // Color via variable binding
       if (color !== 'inherit') {
         const colorVar = colorVarMap[color];
         vector.setBoundVariable('fills', 0, 'color', colorVar.id);
@@ -177,7 +177,7 @@ const iconSet = figma.combineAsVariants(iconComponents, _componentsPage);
 iconSet.name = "icon";
 ```
 
-### Map couleur → variable
+### Color → Variable Map
 
 | color | Variable |
 |---|---|
@@ -186,53 +186,53 @@ iconSet.name = "icon";
 | danger | `Feedback/colorDanger` |
 | warning | `Feedback/colorWarning` |
 | success | `Feedback/colorSuccess` |
-| inherit | fills=[] (hérite du parent) |
+| inherit | fills=[] (inherits from parent) |
 
-→ **Screenshot** de _Components — vérifier que le Component Set icon est visible.
+→ **Screenshot** of _Components — verify the icon Component Set is visible.
 
-## Appel 4b — Page ⚙️ Icons
+## Call 4b — ⚙️ Icons Page
 
 ### Structure
 
 ```
 Page principale (2000px, Auto Layout vertical, gap=80, padding=24)
 ├── .documentation header (type=documentation, badge "Foundations", title "Icons")
-├── Pour chaque catégorie :
-│   ├── Titre catégorie (16px Bold)
-│   └── Grille Auto Layout wrap, gap=24
-│       └── Frame 80×100 par icône (vertical, gap=8, centerH)
+├── For each category:
+│   ├── Category title (16px Bold)
+│   └── Auto Layout wrap grid, gap=24
+│       └── Frame 80×100 per icon (vertical, gap=8, centerH)
 │           ├── SVG node resize 32×32, fills={Neutral/colorText}
-│           └── Label 12px Regular, gris 600, textAlign=CENTER
+│           └── Label 12px Regular, gray 600, textAlign=CENTER
 └── _DesignSystemFooter
 ```
 
-### Catégories et icônes
+### Categories and Icons
 
 ```
-Navigation :    angle-small-down, angle-small-up, angle-small-left, angle-small-right,
+Navigation:     angle-small-down, angle-small-up, angle-small-left, angle-small-right,
                 arrow-left, arrow-right, bars-staggered
-Actions :       plus, cross, check, pencil, trash, copy, share, download, upload
-Recherche :     search, filter, bars-sort
-Utilisateur :   user, users, lock, unlock, key
-Communication : envelope, bell, comment-alt
-Contenu :       picture, file, folder, link
-Interface :     eye, eye-crossed, settings, home, info, exclamation, ban
-Data :          chart-line-up, calendar, clock
-Toggles :       sun, moon, globe
-Commerce :      shopping-cart, credit-card, star
+Actions:        plus, cross, check, pencil, trash, copy, share, download, upload
+Search:         search, filter, bars-sort
+User:           user, users, lock, unlock, key
+Communication:  envelope, bell, comment-alt
+Content:        picture, file, folder, link
+Interface:      eye, eye-crossed, settings, home, info, exclamation, ban
+Data:           chart-line-up, calendar, clock
+Toggles:        sun, moon, globe
+Commerce:       shopping-cart, credit-card, star
 ```
 
-### Import SVG — Pattern
+### SVG Import — Pattern
 
-Le code Plugin API n'a pas accès au filesystem. L'assistant DOIT :
-1. Lire les SVG locaux avec `cat` ou `read_file` **dans un appel terminal SÉPARÉ avant le MCP**
-2. Stocker le contenu SVG complet de chaque fichier
-3. Injecter les strings SVG **exactes** dans `figma.createNodeFromSvg()` dans le code MCP
+The Plugin API code has no filesystem access. The assistant MUST:
+1. Read local SVGs with `cat` or `read_file` **in a SEPARATE terminal call before the MCP**
+2. Store the complete SVG content of each file
+3. Inject the **exact** SVG strings into `figma.createNodeFromSvg()` in the MCP code
 
-**⚠️ Ne JAMAIS inventer ou simplifier les paths SVG** — toujours le contenu exact du fichier.
+**⚠️ NEVER invent or simplify SVG paths** — always use the exact file content.
 
 ```bash
-# Lire toutes les icônes nécessaires en une seule commande
+# Read all needed icons in a single command
 for f in fi-rr-plus fi-rr-minus fi-rr-search fi-rr-check fi-rr-cross \
          fi-rr-angle-small-down fi-rr-angle-small-right fi-rr-user \
          fi-rr-settings fi-rr-bell fi-rr-eye fi-rr-eye-crossed \
@@ -251,9 +251,9 @@ done
 
 ## Checklist
 
-- [ ] Dossier icônes vérifié et accessible
-- [ ] SVGs lus et paths extraits (30 icônes minimum)
-- [ ] Icon Component Set créé sur _Components (15 icônes × 5 sizes × 6 colors)
-- [ ] Page ⚙️ Icons avec grille catégorisée
-- [ ] Icônes visibles (32×32 minimum, fills Neutral/colorText)
-- [ ] Screenshots vérifiés
+- [ ] Icons folder verified and accessible
+- [ ] SVGs read and paths extracted (30 icons minimum)
+- [ ] Icon Component Set created on _Components (15 icons × 5 sizes × 6 colors)
+- [ ] ⚙️ Icons page with categorized grid
+- [ ] Icons visible (32×32 minimum, fills Neutral/colorText)
+- [ ] Screenshots verified

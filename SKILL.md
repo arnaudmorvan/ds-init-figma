@@ -1,223 +1,114 @@
 ---
 name: ds-init
-description: "Créer un Design System dans Figma. USE WHEN: lancement de projet, création de DS Figma, setup variables/tokens, création de composants Figma, structuration des pages. Pose les questions de configuration (polices, couleurs, arrondis, ombres, spacing, breakpoints) puis crée le fichier Figma avec variables et composants."
-argument-hint: "Nom du projet (ex: MonApp DS)"
+description: "Create a Design System in Figma. USE WHEN: project kickoff, Figma DS creation, setting up variables/tokens, creating Figma components, structuring pages. Asks configuration questions (fonts, colors, radii, shadows, spacing, breakpoints) then creates the Figma file with variables and components."
+argument-hint: "Project name (e.g. MyApp DS)"
 ---
 
-# DS Init — Création d'un Design System dans Figma
+# DS Init — Create a Design System in Figma
 
-## Objectif
+## Goal
 
-Créer un Design System complet dans Figma via une exécution **modulaire et vérifiée**.
-Chaque phase est autonome, vérifiée par screenshot, et peut être relancée sans tout recasser.
+Create a complete Design System in Figma through a **modular and verified** execution.
+Each phase is self-contained, verified by screenshot, and can be re-run without breaking things.
 
-**Références** :
-- [Base de connaissances DS](copilot-skill:/ds-audit/references/ds-knowledge-base.md) — patterns issus des audits
-- [Documentation Figma Components](copilot-skill:/ds-audit/references/figma-components-doc.md) — SlotNode, Auto Layout, héritage
+**References**:
+- [DS Knowledge Base](copilot-skill:/ds-audit/references/ds-knowledge-base.md) — patterns from audits
+- [Figma Components Documentation](copilot-skill:/ds-audit/references/figma-components-doc.md) — SlotNode, Auto Layout, inheritance
 
-**Outils MCP** :
-- `mcp_figma_create_new_file` — Créer le fichier DS
-- `mcp_figma_use_figma` — Exécuter du Plugin API Figma
-- `mcp_figma_get_screenshot` — Vérifier le résultat visuel
+**MCP Tools**:
+- `mcp_figma_create_new_file` — Create the DS file
+- `mcp_figma_use_figma` — Execute Figma Plugin API code
+- `mcp_figma_get_screenshot` — Verify visual output
 
-> **⚠️** `mcp_figma_generate_figma_design` est haut niveau. Pour un contrôle précis, utiliser `mcp_figma_use_figma`.
+> **⚠️** `mcp_figma_generate_figma_design` is high-level. For precise control, use `mcp_figma_use_figma`.
 
 ---
 
-## Règle d'or : Vérifier après CHAQUE appel
+## Golden Rule: Verify after EVERY call
 
 ```
-APRÈS chaque mcp_figma_use_figma :
-1. get_screenshot de la page modifiée
-2. Vérifier : éléments visibles ? superpositions ? hauteurs effondrées ?
-3. Si problème → corriger AVANT de passer au suivant
+AFTER every mcp_figma_use_figma:
+1. get_screenshot of the modified page
+2. Check: elements visible? overlaps? collapsed heights?
+3. If problem → fix BEFORE moving to the next step
 ```
 
-Lire [references/rules.md](copilot-skill:/ds-init/references/rules.md) **avant le premier appel MCP**.
-Utiliser les patterns de [references/plugin-api-patterns.md](copilot-skill:/ds-init/references/plugin-api-patterns.md).
-Suivre les conventions visuelles de [references/style-guide.md](copilot-skill:/ds-init/references/style-guide.md).
+Read [references/rules.md](copilot-skill:/ds-init/references/rules.md) **before the first MCP call**.
+Use patterns from [references/plugin-api-patterns.md](copilot-skill:/ds-init/references/plugin-api-patterns.md).
+Follow visual conventions from [references/style-guide.md](copilot-skill:/ds-init/references/style-guide.md).
 
 ---
 
-## Phase 0 — Collecte d'informations (BLOQUANT)
+## Phase 0 — Information Gathering (BLOCKING)
 
-> **⛔ BLOQUANT** : NE PAS passer à la Phase 1 tant que le user n'a pas répondu aux questions.
-> Si le user dit "défauts" ou "peu importe", utiliser les valeurs par défaut.
-> Mais TOUJOURS poser les questions d'abord — ne JAMAIS démarrer silencieusement.
+> **⛔ BLOCKING**: DO NOT proceed to Phase 1 until the user has answered the questions.
+> If the user says "defaults" or "don't care", use the default values.
+> But ALWAYS ask the questions first — NEVER start silently.
 
-**Si le user fournit déjà un lien Figma + des specs** → extraire les infos du message et confirmer.
-**Si le user dit juste "lance un init"** → poser les questions ci-dessous AVANT de créer quoi que ce soit.
+**If the user already provides a Figma link + specs** → extract info from the message and confirm.
+**If the user just says "run an init"** → ask the questions below BEFORE creating anything.
 
-### Méthode : TOUJOURS utiliser `vscode_askQuestions`
+### Method: Ask the user the following questions
 
-Appeler `vscode_askQuestions` avec le JSON ci-dessous. C'est **obligatoire** à chaque init — ne jamais poser les questions en chat.
+Present these questions to the user **before starting any phase**. Use whatever method your environment supports (interactive form, chat questions, etc.). Collect all answers before proceeding.
 
-```json
-[
-  {
-    "header": "Nom du DS",
-    "question": "Quel nom pour le Design System ?"
-  },
-  {
-    "allowFreeformInput": false,
-    "header": "Plateforme",
-    "options": [
-      { "label": "Web", "recommended": true },
-      { "label": "Mobile" },
-      { "label": "Desktop" },
-      { "label": "Multi" }
-    ],
-    "question": "Quelle plateforme cible ?"
-  },
-  {
-    "allowFreeformInput": true,
-    "header": "Police",
-    "options": [
-      { "label": "Inter", "recommended": true },
-      { "label": "DM Sans" },
-      { "label": "Plus Jakarta Sans" }
-    ],
-    "question": "Quelle police principale ?"
-  },
-  {
-    "header": "Couleur primaire",
-    "question": "Couleur primaire (hex) ? Ex: #2563EB"
-  },
-  {
-    "header": "Couleur secondaire",
-    "question": "Couleur secondaire (hex) ? Ex: #7C3AED"
-  },
-  {
-    "allowFreeformInput": false,
-    "header": "Arrondis",
-    "options": [
-      { "description": "0-2px", "label": "Sharp" },
-      { "description": "4-8px", "label": "Soft", "recommended": true },
-      { "description": "12-24px", "label": "Round" },
-      { "description": "999px", "label": "Full" }
-    ],
-    "question": "Style d'arrondis ?"
-  },
-  {
-    "allowFreeformInput": false,
-    "header": "Ombres",
-    "options": [
-      { "label": "Subtiles", "recommended": true },
-      { "label": "Marquées" },
-      { "label": "Glow" }
-    ],
-    "question": "Style d'ombres ?"
-  },
-  {
-    "allowFreeformInput": false,
-    "header": "Dark mode",
-    "options": [
-      { "label": "Oui", "recommended": true },
-      { "label": "Non" },
-      { "label": "Plus tard" }
-    ],
-    "question": "Support du Dark mode ?"
-  },
-  {
-    "allowFreeformInput": false,
-    "header": "Spacing base",
-    "options": [
-      { "label": "4px", "recommended": true },
-      { "label": "8px" }
-    ],
-    "question": "Unité de spacing de base ?"
-  },
-  {
-    "allowFreeformInput": false,
-    "header": "Composants",
-    "options": [
-      { "description": "Button, Input, Select, Checkbox, Radio", "label": "Tier 1", "recommended": true },
-      { "description": "+ Card, Modal, Tabs, Alert, Badge", "label": "Tier 2" },
-      { "description": "Tous les composants avancés", "label": "Tier 3+" }
-    ],
-    "question": "Quels tiers de composants ?"
-  },
-  {
-    "allowFreeformInput": false,
-    "header": "Templates SaaS",
-    "multiSelect": true,
-    "options": [
-      { "label": "Dashboard", "recommended": true },
-      { "label": "Settings" },
-      { "label": "List/Detail" },
-      { "label": "Table" },
-      { "label": "Profile" },
-      { "label": "Onboarding" }
-    ],
-    "question": "Quels templates SaaS inclure ?"
-  },
-  {
-    "allowFreeformInput": false,
-    "header": "Templates Landing",
-    "multiSelect": true,
-    "options": [
-      { "label": "Hero", "recommended": true },
-      { "label": "Features" },
-      { "label": "Pricing" },
-      { "label": "Testimonials" },
-      { "label": "CTA Banner" },
-      { "label": "Footer" }
-    ],
-    "question": "Quels templates Landing inclure ?"
-  },
-  {
-    "allowFreeformInput": false,
-    "header": "Doc header",
-    "options": [
-      { "label": "Oui", "recommended": true },
-      { "label": "Non" }
-    ],
-    "question": "Inclure les composants Doc Header sur les pages ?"
-  }
-]
-```
+| # | Question | Options (★ = recommended default) | Free input? |
+|---|----------|-----------------------------------|-------------|
+| 1 | **DS Name** — What name for the Design System? | — | Yes |
+| 2 | **Platform** — What target platform? | ★ Web · Mobile · Desktop · Multi | No |
+| 3 | **Font** — What primary font? | ★ Inter · DM Sans · Plus Jakarta Sans | Yes (custom font) |
+| 4 | **Primary color** — Primary color (hex)? e.g. #2563EB | — | Yes |
+| 5 | **Secondary color** — Secondary color (hex)? e.g. #7C3AED | — | Yes |
+| 6 | **Border radius** — Radius style? | Sharp (0-2px) · ★ Soft (4-8px) · Round (12-24px) · Full (999px) | No |
+| 7 | **Shadows** — Shadow style? | ★ Subtle · Bold · Glow | No |
+| 8 | **Dark mode** — Dark mode support? | ★ Yes · No · Later | No |
+| 9 | **Spacing base** — Base spacing unit? | ★ 4px · 8px | No |
+| 10 | **Components** — Which component tiers? | ★ Tier 1 (Button, Input, Select, Checkbox, Radio) · Tier 2 (+Card, Modal, Tabs, Alert, Badge) · Tier 3+ (all advanced) | No |
+| 11 | **SaaS Templates** (multi-select) — Which SaaS templates? | ★ Dashboard · Settings · List/Detail · Table · Profile · Onboarding | No |
+| 12 | **Landing Templates** (multi-select) — Which Landing templates? | ★ Hero · Features · Pricing · Testimonials · CTA Banner · Footer | No |
+| 13 | **Doc header** — Include Doc Header components on pages? | ★ Yes · No | No |
 
-> Si le user annule le formulaire → lui demander en chat en dernier recours.
+> If the user cancels or doesn't respond → ask again in chat as a last resort.
 
-**Valeurs par défaut silencieuses** (pas demandées) :
-- Échelle typo : Mineure tierce 1.2
-- Grid : 12 colonnes, gouttière 24px, max-width 1280px
-- Breakpoints : 640 / 768 / 1024 / 1280 / 1536
-- Icônes : Flaticon UIcons Regular Rounded
+**Silent defaults** (not asked):
+- Type scale: Minor third 1.2
+- Grid: 12 columns, 24px gutter, max-width 1280px
+- Breakpoints: 640 / 768 / 1024 / 1280 / 1536
+- Icons: Flaticon UIcons Regular Rounded
 
 ---
 
-## Phases d'exécution
+## Execution Phases
 
-### Vue d'ensemble
+### Overview
 
-| Phase | Fichier | Appels MCP | Produit |
+| Phase | File | MCP Calls | Output |
 |---|---|---|---|
-| 1. Setup | [phases/01-setup.md](copilot-skill:/ds-init/phases/01-setup.md) | 1 create + 4 use | Fichier + pages + 8 collections variables |
+| 1. Setup | [phases/01-setup.md](copilot-skill:/ds-init/phases/01-setup.md) | 1 create + 4 use | File + pages + 8 variable collections |
 | 2. Doc Components | [phases/02-doc-components.md](copilot-skill:/ds-init/phases/02-doc-components.md) | 1 use | Header, Footer, Metadata, Divider |
-| 3. Layouts & Templates | [phases/03-layouts-templates.md](copilot-skill:/ds-init/phases/03-layouts-templates.md) | 2 use | PageLayout, GridLayout, Templates SaaS/Landing |
-| 4. Icons | [phases/04-icons.md](copilot-skill:/ds-init/phases/04-icons.md) | 2 use | Icon Component Set + Page Icons |
-| 5. Components | [phases/05-components.md](copilot-skill:/ds-init/phases/05-components.md) | 1 par composant | Button, TextField, Select, Checkbox, Radio |
-| 6. Foundations | [phases/06-foundations.md](copilot-skill:/ds-init/phases/06-foundations.md) | 1 par section | Page Foundations (Colors, Typo, Size…) |
-| 7. Showcase | [phases/07-showcase.md](copilot-skill:/ds-init/phases/07-showcase.md) | 1 par composant | Page Components (Light + Dark) |
-| 8. Welcome | [phases/08-welcome.md](copilot-skill:/ds-init/phases/08-welcome.md) | 1-2 use | Page Welcome |
-| 9. Examples | [phases/09-examples.md](copilot-skill:/ds-init/phases/09-examples.md) | 4 use | Page Examples (Login, Dashboard, Settings, User List) |
+| 3. Layouts & Templates | [phases/03-layouts-templates.md](copilot-skill:/ds-init/phases/03-layouts-templates.md) | 2 use | PageLayout, GridLayout, SaaS/Landing Templates |
+| 4. Icons | [phases/04-icons.md](copilot-skill:/ds-init/phases/04-icons.md) | 2 use | Icon Component Set + Icons Page |
+| 5. Components | [phases/05-components.md](copilot-skill:/ds-init/phases/05-components.md) | 1 per component | Button, TextField, Select, Checkbox, Radio |
+| 6. Foundations | [phases/06-foundations.md](copilot-skill:/ds-init/phases/06-foundations.md) | 1 per section | Foundations Page (Colors, Typo, Size…) |
+| 7. Showcase | [phases/07-showcase.md](copilot-skill:/ds-init/phases/07-showcase.md) | 1 per component | Components Page (Light + Dark) |
+| 8. Welcome | [phases/08-welcome.md](copilot-skill:/ds-init/phases/08-welcome.md) | 1-2 use | Welcome Page |
+| 9. Examples | [phases/09-examples.md](copilot-skill:/ds-init/phases/09-examples.md) | 4 use | Examples Page (Login, Dashboard, Settings, User List) |
 
-### Workflow d'exécution
+### Execution Workflow
 
 ```
-Pour chaque phase :
-  1. Lire le fichier de phase (copilot-skill:/ds-init/phases/XX-*.md)
-  2. Exécuter les appels MCP décrits
-  3. Screenshot + vérification visuelle
-  4. Si OK → phase suivante
-  5. Si problème → corriger dans la même phase AVANT de continuer
+For each phase:
+  1. Read the phase file (copilot-skill:/ds-init/phases/XX-*.md)
+  2. Execute the described MCP calls
+  3. Screenshot + visual verification
+  4. If OK → next phase
+  5. If problem → fix within the same phase BEFORE continuing
 ```
 
-**Principe clé** : un appel MCP = une unité de travail vérifiable.
-Ne JAMAIS enchaîner 3+ appels sans screenshot intermédiaire.
+**Key principle**: one MCP call = one verifiable work unit.
+NEVER chain 3+ calls without an intermediate screenshot.
 
-### Ordre des dépendances
+### Dependency Order
 
 ```
 Phase 1 (Setup) ─────────┬──→ Phase 2 (Doc Components)
@@ -238,45 +129,45 @@ Phase 1 (Setup) ─────────┬──→ Phase 2 (Doc Components)
                           └──→ Phase 9 (Examples) ←── Phase 2 + 5
 ```
 
-**Parallélisable** : Phases 3 et 4 peuvent tourner indépendamment après Phase 1+2.
-**Séquentiel** : Phase 5 → Phase 7 (les showcases instancient les Component Sets).
+**Parallelizable**: Phases 3 and 4 can run independently after Phase 1+2.
+**Sequential**: Phase 5 → Phase 7 (showcases instantiate the Component Sets).
 
 ---
 
-## Séparation des pages — Architecture
+## Page Separation — Architecture
 
-> Les Main Components et les pages de présentation sont **physiquement séparés**.
+> Main Components and presentation pages are **physically separated**.
 
-| Page | Contenu |
+| Page | Content |
 |---|---|
-| `🔒 _Components` | TOUS les Main Components (Component Sets, doc components, layouts, templates) |
-| `📄 👋 Welcome` | Page vitrine du DS |
-| `🧱 Foundations` | Contenu visuel : swatches, type scale, spacing scale… |
-| `⚙️ Icons` | Grille d'icônes catégorisée |
-| `🏗️ Layouts` | Présentation des layouts/templates avec slots colorés |
-| `Components` | Instances showcase Light + Dark |
-| `📐 Examples` | Pages d'exemples composées (Login, Dashboard, Settings, User List) |
+| `🔒 _Components` | ALL Main Components (Component Sets, doc components, layouts, templates) |
+| `📄 👋 Welcome` | DS showcase page |
+| `🧱 Foundations` | Visual content: swatches, type scale, spacing scale… |
+| `⚙️ Icons` | Categorized icon grid |
+| `🏗️ Layouts` | Layout/template presentation with colored slots |
+| `Components` | Showcase instances Light + Dark |
+| `📐 Examples` | Composed example pages (Login, Dashboard, Settings, User List) |
 
 ---
 
-## Récapitulatif (fin d'exécution)
+## Summary (end of execution)
 
-Produire un résumé :
+Produce a summary:
 
 ```markdown
-## DS Figma initialisé : [Nom]
+## Figma DS initialized: [Name]
 
 ### Configuration
-- Police : [font] | Primaire : [hex] | Secondaire : [hex]
-- Radius : [style] | Dark mode : [oui/non]
+- Font: [font] | Primary: [hex] | Secondary: [hex]
+- Radius: [style] | Dark mode: [yes/no]
 
-### Contenu créé
+### Created content
 - [X] pages | [X] Variable Collections | [X] variables
 - [X] Component Sets | [X] templates (SaaS + Landing)
-- [X] icônes importées
+- [X] icons imported
 
-### Prochaines étapes
-1. Valider couleurs/typo avec les stakeholders
-2. Ajouter les composants Tier 2+
-3. Tester dans un prototype
+### Next steps
+1. Validate colors/typography with stakeholders
+2. Add Tier 2+ components
+3. Test in a prototype
 ```

@@ -1,19 +1,19 @@
-# Phase 6 — Page Foundations
+# Phase 6 — Foundations Page
 
-> **Appels MCP** : 1 appel par foundation (8 appels)
-> **Prérequis** : Phase 1 (variables) + Phase 2 (doc components)
-> **Produit** : Page 🧱 Foundations avec contenu visuel
-> **Vérification** : Screenshot après CHAQUE foundation
+> **MCP Calls**: 1 call per foundation (8 calls)
+> **Prerequisites**: Phase 1 (variables) + Phase 2 (doc components)
+> **Output**: 🧱 Foundations Page with visual content
+> **Verification**: Screenshot after EACH foundation
 
-## Principe : un appel = une foundation
+## Principle: one call = one foundation
 
-Chaque foundation est un **Section frame (layer)** dans le frame principal de la page 🧱 Foundations.
+Each foundation is a **Section frame (layer)** in the main frame of the 🧱 Foundations page.
 
-**Premier appel** : créer le frame principal + le doc header + la première foundation.
-**Appels suivants** : ajouter les sections au frame principal existant.
-**Dernier appel** : ajouter le footer.
+**First call**: create the main frame + doc header + first foundation.
+**Subsequent calls**: add sections to the existing main frame.
+**Last call**: add the footer.
 
-### Frame principal (créé au premier appel)
+### Main frame (created on the first call)
 
 ```javascript
 const main = figma.createFrame();
@@ -29,20 +29,20 @@ main.fills = [{type: "SOLID", color: {r: 1, g: 1, b: 1}}];
 main.clipsContent = false;
 ```
 
-## Appel 6a — Colors
+## Call 6a — Colors
 
-`_SectionMetadata` (label="Colors", specs="Primitives + Semantics") + 3 frames :
+`_SectionMetadata` (label="Colors", specs="Primitives + Semantics") + 3 frames:
 
 ### Primitive colors
 
-**⚠️ CRITIQUE** : Les swatches DOIVENT afficher les couleurs réelles, pas du gris.
-Le binding variable seul peut ne pas se voir dans le screenshot si la variable résout vers une couleur identique au fill initial.
+**⚠️ CRITICAL**: Swatches MUST display actual colors, not gray.
+Variable binding alone may not be visible in the screenshot if the variable resolves to a color identical to the initial fill.
 
-**Pattern obligatoire** : résoudre la valeur réelle de la variable et l'utiliser comme fill de base, PUIS binder la variable par-dessus.
+**Required pattern**: resolve the actual variable value and use it as the base fill, THEN bind the variable on top.
 
-#### Mapping catégories → préfixes variables
+#### Category → Variable Prefix Mapping
 
-| Catégorie | Préfixe variable | Shades |
+| Category | Variable Prefix | Shades |
 |-----------|-----------------|--------|
 | Primary | Blue | 50,100,200,300,400,500,600,700,800,900,950 |
 | Secondary | Purple | 50,100,200,300,400,500,600,700,800,900,950 |
@@ -51,10 +51,10 @@ Le binding variable seul peut ne pas se voir dans le screenshot si la variable r
 | Warning | Yellow | 50,100,200,300,400,500,600,700,800,900,950 |
 | Danger | Red | 50,100,200,300,400,500,600,700,800,900,950 |
 
-#### Structure complète par rangée
+#### Complete Structure Per Row
 
 ```javascript
-// Récupérer les variables ET les collections pour résoudre les valeurs
+// Retrieve variables AND collections to resolve values
 const allVars = await figma.variables.getLocalVariablesAsync('COLOR');
 const collections = await figma.variables.getLocalVariableCollectionsAsync();
 
@@ -75,7 +75,7 @@ function rgbToHex(c) {
   return '#' + [c.r,c.g,c.b].map(x => Math.round(x*255).toString(16).padStart(2,'0')).join('').toUpperCase();
 }
 
-// Pour chaque catégorie → créer une ROW horizontale
+// For each category → create a HORIZONTAL row
 for (const cat of categories) {
   const row = figma.createFrame();
   row.name = cat.label;
@@ -85,7 +85,7 @@ for (const cat of categories) {
   row.itemSpacing = 12;
   row.fills = [];
 
-  // Label wrapper (vertical, paddingTop=16 pour centrer vs swatches)
+  // Label wrapper (vertical, paddingTop=16 to center vs swatches)
   const labelWrap = figma.createFrame();
   labelWrap.layoutMode = "VERTICAL"; labelWrap.fills = [];
   labelWrap.counterAxisSizingMode = "AUTO"; labelWrap.primaryAxisSizingMode = "AUTO";
@@ -97,7 +97,7 @@ for (const cat of categories) {
   labelWrap.appendChild(catLabel);
   row.appendChild(labelWrap);
 
-  // Pour chaque shade → swatchContainer vertical (swatch + shade + hex)
+  // For each shade → swatchContainer vertical (swatch + shade + hex)
   for (const shade of cat.shades) {
     const varName = `${cat.prefix}/${shade}`;
     const v = allVars.find(vv => vv.name === varName);
@@ -108,7 +108,7 @@ for (const cat of categories) {
     container.counterAxisSizingMode = "AUTO"; container.primaryAxisSizingMode = "AUTO";
     container.itemSpacing = 4; container.fills = [];
 
-    // Swatch 48×48, cornerRadius=8, fill résolu + variable bound
+    // Swatch 48×48, cornerRadius=8, resolved fill + variable bound
     const swatch = figma.createFrame();
     swatch.resize(48, 48); swatch.cornerRadius = 8;
     swatch.fills = [{type:'SOLID', color: resolved}];
@@ -119,7 +119,7 @@ for (const cat of categories) {
     }
     container.appendChild(swatch);
 
-    // Shade label (ex: "500") + hex label (ex: "#2563EB")
+    // Shade label (e.g. "500") + hex label (e.g. "#2563EB")
     const sl = figma.createText();
     sl.fontName = {family:"Inter",style:"Regular"}; sl.characters = shade;
     sl.fontSize = 10; sl.textAlignHorizontal = "CENTER";
@@ -137,107 +137,107 @@ for (const cat of categories) {
 }
 ```
 
-#### Checklist Primitive Colors
-- [ ] Chaque ROW = frame HORIZONTAL (AUTO × AUTO, itemSpacing=12, fills=[])
-- [ ] Label wrapper = frame VERTICAL avec paddingTop=16
-- [ ] Chaque swatch = 48×48, cornerRadius=8, fill RÉSOLU + variable bound
-- [ ] Shade label (fontSize=10) + hex label (fontSize=9) sous chaque swatch
-- [ ] Utiliser `resolveColor()` — JAMAIS de fill gris ou vide
-- [ ] `insertChild` après le titre "Primitive Colors" dans colorsSection
+#### Primitive Colors Checklist
+- [ ] Each ROW = HORIZONTAL frame (AUTO × AUTO, itemSpacing=12, fills=[])
+- [ ] Label wrapper = VERTICAL frame with paddingTop=16
+- [ ] Each swatch = 48×48, cornerRadius=8, RESOLVED fill + variable bound
+- [ ] Shade label (fontSize=10) + hex label (fontSize=9) under each swatch
+- [ ] Use `resolveColor()` — NEVER gray or empty fills
+- [ ] `insertChild` after the "Primitive Colors" title in colorsSection
 
 ### Semantic color tokens
 
-Structure : `semantic-grid` frame (VERTICAL, itemSpacing=16) avec :
-- Pour chaque catégorie : label texte + row HORIZONTAL de token swatches
+Structure: `semantic-grid` frame (VERTICAL, itemSpacing=16) with:
+- For each category: text label + HORIZONTAL row of token swatches
 
-**Catégories et tokens à afficher :**
+**Categories and tokens to display:**
 
-| Catégorie | Tokens |
+| Category | Tokens |
 |-----------|--------|
 | Primary | colorPrimary, colorPrimaryHover, colorPrimaryActive |
 | Neutral | colorText, colorTextSecondary, colorBorder |
 | Feedback | colorSuccess, colorWarning, colorDanger, colorInfo |
 
-**Structure par token swatch :**
+**Structure per token swatch:**
 ```
 tokenContainer (HORIZONTAL, itemSpacing=8, fills=[])
   → circle (FRAME 32×32, cornerRadius=16, fill résolu + variable bound)
   → tokenName (TEXT fontSize=11)
 ```
 
-**Pattern** : même `resolveColor()` que pour les Primitives — résoudre la valeur, appliquer en fill, puis binder.
+**Pattern**: same `resolveColor()` as for Primitives — resolve the value, apply as fill, then bind.
 
-→ **Screenshot** de la page Foundations.
+→ **Screenshot** of the Foundations page.
 
-## Appel 6b — Typography
+## Call 6b — Typography
 
-`_SectionMetadata` (label="Typography") + 2 frames :
+`_SectionMetadata` (label="Typography") + 2 frames:
 
 ### Typography styles
-Tableau visuel : Preview | Alias | Font | Weight | Size | Line height
-Chaque ligne = le texte rendu dans la vraie police/taille.
+Visual table: Preview | Alias | Font | Weight | Size | Line height
+Each row = text rendered in the actual font/size.
 
 ### Typography tokens
-Deux colonnes Desktop / Mobile avec les valeurs brutes.
+Two columns Desktop / Mobile with raw values.
 
 → **Screenshot**.
 
-## Appel 6c — Size
+## Call 6c — Size
 
-`_SectionMetadata` (label="Size") + 1 frame :
+`_SectionMetadata` (label="Size") + 1 frame:
 
-Tableau : Name | Token | Value
+Table: Name | Token | Value
 → controlHeight (xs→xl), controlPadding, controlGap, iconSize
 
-## Appel 6d — Border
+## Call 6d — Border
 
-`_SectionMetadata` (label="Border") + 1 frame :
+`_SectionMetadata` (label="Border") + 1 frame:
 
-Lignes d'épaisseurs visibles (none=0, thin=1, medium=2, thick=3).
+Visible thickness lines (none=0, thin=1, medium=2, thick=3).
 
-## Appel 6e — Space
+## Call 6e — Space
 
-`_SectionMetadata` (label="Spacing") + 1 frame :
+`_SectionMetadata` (label="Spacing") + 1 frame:
 
-Colonnes : Name | Token | Value (barre visuelle proportionnelle + valeur px)
-La barre colorée grandit proportionnellement.
+Columns: Name | Token | Value (proportional visual bar + px value)
+The colored bar grows proportionally.
 
-## Appel 6f — Radius
+## Call 6f — Radius
 
-`_SectionMetadata` (label="Radius") + 2 frames :
+`_SectionMetadata` (label="Radius") + 2 frames:
 
 ### Semantic radius tokens
-Chaque ligne : name + carré avec le radius appliqué + valeur px
+Each row: name + square with the applied radius + px value
 
 ### Component radius tokens
-Tableau : Name | Token | mapping
+Table: Name | Token | mapping
 
-## Appel 6g — Shadow
+## Call 6g — Shadow
 
-`_SectionMetadata` (label="Shadow") + 1 frame :
+`_SectionMetadata` (label="Shadow") + 1 frame:
 
-4 cards (200×120) côte à côte : fond blanc, cornerRadius, ombre appliquée via `.effects`.
+4 cards (200×120) side by side: white background, cornerRadius, shadow applied via `.effects`.
 
-## Appel 6h — Breakpoint + Footer
+## Call 6h — Breakpoint + Footer
 
-`_SectionMetadata` (label="Breakpoint") + 2 frames :
+`_SectionMetadata` (label="Breakpoint") + 2 frames:
 
 ### Breakpoint tokens
-Tableau : breakpoint | min-width | max-width | columns | gutter | margin
+Table: breakpoint | min-width | max-width | columns | gutter | margin
 
 ### Grid visualization
-4 device frames côte à côte (mobile 375, tablet 768, desktop 1440, large 1920).
+4 device frames side by side (mobile 375, tablet 768, desktop 1440, large 1920).
 
-+ `_DesignSystemFooter` à la fin du frame principal.
++ `_DesignSystemFooter` at the end of the main frame.
 
-→ **Screenshot final** de la page Foundations complète.
+→ **Final screenshot** of the complete Foundations page.
 
 ## Checklist
 
-- [ ] Frame principal créé avec Auto Layout vertical, gap=120
-- [ ] .documentation header (type=documentation) en haut
-- [ ] 8 sections de foundation avec contenu visuel concret
-- [ ] Chaque section introduite par _SectionMetadata
-- [ ] _DesignSystemFooter en bas
-- [ ] Aucune section vide
-- [ ] Screenshot vérifié pour chaque foundation
+- [ ] Main frame created with vertical Auto Layout, gap=120
+- [ ] .documentation header (type=documentation) at the top
+- [ ] 8 foundation sections with concrete visual content
+- [ ] Each section introduced by _SectionMetadata
+- [ ] _DesignSystemFooter at the bottom
+- [ ] No empty sections
+- [ ] Screenshot verified for each foundation

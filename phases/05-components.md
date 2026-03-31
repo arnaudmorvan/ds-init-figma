@@ -1,96 +1,96 @@
 # Phase 5 — Component Sets
 
-> **Appels MCP** : 1 appel par composant (5 appels pour Tier 1)
-> **Prérequis** : Phase 1 (variables Size, Color, Radius) + Phase 4 (Icon CS)
-> **Produit** : Component Sets sur 🔒 _Components
-> **Vérification** : Screenshot après CHAQUE composant
+> **MCP Calls**: 1 call per component (5 calls for Tier 1)
+> **Prerequisites**: Phase 1 (Size, Color, Radius variables) + Phase 4 (Icon CS)
+> **Output**: Component Sets on 🔒 _Components
+> **Verification**: Screenshot after EACH component
 
-## Règle n°1 : Un composant par appel MCP
+## Rule #1: One component per MCP call
 
-**Ne PAS créer tous les composants en un seul appel.** Faire :
-- Appel 5a → Button
-- Appel 5b → Text Field
-- Appel 5c → Select
-- Appel 5d → Checkbox
-- Appel 5e → Radio
-- Appel 5f → .elements / helper-text (sous-composant partagé)
+**DO NOT create all components in a single call.** Do:
+- Call 5a → Button
+- Call 5b → Text Field
+- Call 5c → Select
+- Call 5d → Checkbox
+- Call 5e → Radio
+- Call 5f → .elements / helper-text (shared sub-component)
 
-Screenshot de vérification entre chaque appel.
+Screenshot verification between each call.
 
-## Règle n°1bis : Un LAYER par Component Set sur _Components
+## Rule #1bis: One LAYER per Component Set on _Components
 
-**⛔ CRITIQUE** : Chaque Component Set DOIT être un enfant DIRECT de la page `_Components`, PAS imbriqué dans un frame commun. Figma considère les enfants directs d'une page comme des "layers" dans le panel Layers.
+**⛔ CRITICAL**: Each Component Set MUST be a DIRECT child of the `_Components` page, NOT nested inside a shared frame. Figma treats direct children of a page as "layers" in the Layers panel.
 
 ```javascript
-// ✅ CORRECT — chaque CS est un layer séparé sur la page
+// ✅ CORRECT — each CS is a separate layer on the page
 const compPage = figma.root.children.find(p => p.name === '🔒 _Components');
 const buttonSet = figma.combineAsVariants(buttonVariants, compPage);
 buttonSet.name = "button";
-buttonSet.y = lastY + 200; // Espacement vertical entre layers
+buttonSet.y = lastY + 200; // Vertical spacing between layers
 
-// ❌ INTERDIT — ne PAS mettre les CS dans un frame parent commun
+// ❌ FORBIDDEN — do NOT put CS inside a shared parent frame
 const wrapper = figma.createFrame();
 wrapper.name = "All Components";
 compPage.appendChild(wrapper);
-wrapper.appendChild(buttonSet); // ← NON, le CS doit être enfant direct de la page
+wrapper.appendChild(buttonSet); // ← NO, CS must be a direct child of the page
 ```
 
-**Positionnement** : Calculer `startY` en parcourant `compPage.children` pour trouver le point le plus bas, puis ajouter 200px de gap.
+**Positioning**: Calculate `startY` by scanning `compPage.children` to find the lowest point, then add 200px gap.
 
-## Règle n°2 : Toutes les dimensions liées aux variables Size
+## Rule #2: All dimensions bound to Size variables
 
 ```javascript
-// ✅ OBLIGATOIRE — jamais de px hardcodés
+// ✅ REQUIRED — never hardcode px values
 button.setBoundVariable('minHeight', heightVar.id);
 button.setBoundVariable('paddingLeft', paddingVar.id);
 button.setBoundVariable('paddingRight', paddingVar.id);
 button.setBoundVariable('itemSpacing', gapVar.id);
 ```
 
-## Règle n°2bis : TOUTES les couleurs liées aux variables sémantiques (Dark mode)
+## Rule #2bis: ALL colors bound to semantic variables (Dark mode)
 
-**⛔ CRITIQUE** : AUCUNE couleur hardcodée dans les composants. Chaque fill et stroke doit être **bound** à une variable sémantique pour que le switch Light/Dark fonctionne.
+**⛔ CRITICAL**: NO hardcoded colors in components. Every fill and stroke must be **bound** to a semantic variable for the Light/Dark switch to work.
 
-### Mapping couleurs → variables
+### Color → Variable Mapping
 
-| Couleur | Variable sémantique |
+| Color | Semantic Variable |
 |---|---|
-| Fond blanc (input, card, modal) | `Neutral/colorBgElevated` |
-| Fond page | `Neutral/colorBg` |
-| Fond gris clair (hover, subtle) | `Neutral/colorBgSubtle` |
-| Texte principal | `Neutral/colorText` |
-| Texte secondaire | `Neutral/colorTextSecondary` |
-| Texte tertiaire / disabled | `Neutral/colorTextTertiary` |
-| Bordures | `Neutral/colorBorder` |
-| Bordures subtiles | `Neutral/colorBorderSubtle` |
-| Bleu primaire | `Primary/colorPrimary` |
-| Bleu hover | `Primary/colorPrimaryHover` |
-| Bleu active | `Primary/colorPrimaryActive` |
-| Bleu fond léger | `Primary/colorPrimaryBg` |
-| Violet secondaire | `Secondary/colorSecondary` |
-| Vert success | `Feedback/colorSuccess` |
-| Jaune warning | `Feedback/colorWarning` |
-| Rouge danger | `Feedback/colorDanger` |
-| Bleu info | `Feedback/colorInfo` |
-| Fond success | `Feedback/colorSuccessBg` |
-| Fond warning | `Feedback/colorWarningBg` |
-| Fond danger | `Feedback/colorDangerBg` |
-| Fond info | `Feedback/colorInfoBg` |
-| Icônes (noir) | `Neutral/colorText` |
-| Check/dot blanc | `Neutral/colorBg` |
+| White background (input, card, modal) | `Neutral/colorBgElevated` |
+| Page background | `Neutral/colorBg` |
+| Light gray background (hover, subtle) | `Neutral/colorBgSubtle` |
+| Primary text | `Neutral/colorText` |
+| Secondary text | `Neutral/colorTextSecondary` |
+| Tertiary text / disabled | `Neutral/colorTextTertiary` |
+| Borders | `Neutral/colorBorder` |
+| Subtle borders | `Neutral/colorBorderSubtle` |
+| Primary blue | `Primary/colorPrimary` |
+| Blue hover | `Primary/colorPrimaryHover` |
+| Blue active | `Primary/colorPrimaryActive` |
+| Blue light background | `Primary/colorPrimaryBg` |
+| Secondary purple | `Secondary/colorSecondary` |
+| Green success | `Feedback/colorSuccess` |
+| Yellow warning | `Feedback/colorWarning` |
+| Red danger | `Feedback/colorDanger` |
+| Blue info | `Feedback/colorInfo` |
+| Success background | `Feedback/colorSuccessBg` |
+| Warning background | `Feedback/colorWarningBg` |
+| Danger background | `Feedback/colorDangerBg` |
+| Info background | `Feedback/colorInfoBg` |
+| Icons (black) | `Neutral/colorText` |
+| White check/dot | `Neutral/colorBg` |
 
-### Pattern de binding obligatoire
+### Required Binding Pattern
 
 ```javascript
-// Pour chaque fill coloré :
+// For each colored fill:
 const colorVar = getColor('Primary/colorPrimary');
-const resolved = resolveColor(colorVar); // voir 06-foundations.md
-node.fills = [{type:'SOLID', color: resolved}]; // couleur de base visible
+const resolved = resolveColor(colorVar); // see 06-foundations.md
+node.fills = [{type:'SOLID', color: resolved}]; // visible base color
 const fills = JSON.parse(JSON.stringify(node.fills));
 fills[0] = figma.variables.setBoundVariableForPaint(fills[0], 'color', colorVar);
 node.fills = fills;
 
-// Pour chaque stroke :
+// For each stroke:
 const strokeVar = getColor('Neutral/colorBorder');
 const resolvedStroke = resolveColor(strokeVar);
 node.strokes = [{type:'SOLID', color: resolvedStroke}];
@@ -98,7 +98,7 @@ const strokes = JSON.parse(JSON.stringify(node.strokes));
 strokes[0] = figma.variables.setBoundVariableForPaint(strokes[0], 'color', strokeVar);
 node.strokes = strokes;
 
-// ⚠️ INCLURE LES FONDS BLANCS — ils doivent devenir sombres en Dark mode
+// ⚠️ INCLUDE WHITE BACKGROUNDS — they must become dark in Dark mode
 // Input backgrounds, card bg, modal bg → Neutral/colorBgElevated
 // Checkbox/radio unchecked box → Neutral/colorBgElevated
 inputRow.fills = [{type:'SOLID', color: {r:1,g:1,b:1}}];
@@ -107,11 +107,11 @@ bgFills[0] = figma.variables.setBoundVariableForPaint(bgFills[0], 'color', getCo
 inputRow.fills = bgFills;
 ```
 
-**⚠️ ERREUR FRÉQUENTE** : oublier de binder les fonds blancs. Un `fills=[{type:'SOLID', color:{r:1,g:1,b:1}}]` sans variable reste blanc en Dark mode → composant cassé visuellement.
+**⚠️ COMMON MISTAKE**: forgetting to bind white backgrounds. A `fills=[{type:'SOLID', color:{r:1,g:1,b:1}}]` without a variable stays white in Dark mode → visually broken component.
 
-## Règle n°3 : Pattern A (flat variants) par défaut
+## Rule #3: Pattern A (flat variants) by default
 
-Un seul Component Set par composant. Si > 60 variants → Pattern A+ (wrapper séparé).
+One Component Set per component. If > 60 variants → Pattern A+ (separate wrapper).
 
 ---
 
@@ -130,20 +130,20 @@ Un seul Component Set par composant. Si > 60 variants → Pattern A+ (wrapper s�
 └── ⬦ trailing (SlotNode)
 ```
 
-**Couleurs par type :**
+**Colors by type:**
 | Type | Fill | Text | Border |
 |---|---|---|---|
-| Primary | {Primary/colorPrimary} | blanc | aucun |
+| Primary | {Primary/colorPrimary} | white | none |
 | Secondary | transparent | {Neutral/colorText} | {Neutral/colorBorder} |
-| Ghost | transparent | {Primary/colorPrimary} | aucun |
-| Danger | {Feedback/colorDanger} | blanc | aucun |
+| Ghost | transparent | {Primary/colorPrimary} | none |
+| Danger | {Feedback/colorDanger} | white | none |
 
-**Couleurs par state :**
+**Colors by state:**
 | State | Modification |
 |---|---|
-| Default | couleurs de base |
-| Hover | fill légèrement plus clair (ex: PrimaryHover) |
-| Active | fill plus foncé (ex: PrimaryActive) |
+| Default | base colors |
+| Hover | slightly lighter fill (e.g. PrimaryHover) |
+| Active | darker fill (e.g. PrimaryActive) |
 | Focus | outline 2px offset {Primary/colorPrimary} |
 | Disabled | opacity=0.5 |
 
@@ -163,12 +163,12 @@ Un seul Component Set par composant. Si > 60 variants → Pattern A+ (wrapper s�
 │   ├── ⬦ leading (SlotNode)
 │   ├── [Value] ← Text property
 │   └── ⬦ trailing (SlotNode)
-├── Helper Text (horizontal, gap=4) — visible si status ≠ None
+### Helper Text (horizontal, gap=4) — visible if status ≠ None
 │   ├── [Status Icon] 16×16
 │   └── [Message] 12px
 ```
 
-**⚠️ CRITIQUE** : `strokes` visibles sur TOUS les variants (y compris status=None, state=Default).
+**⚠️ CRITICAL**: `strokes` visible on ALL variants (including status=None, state=Default).
 
 ---
 
@@ -179,14 +179,14 @@ Un seul Component Set par composant. Si > 60 variants → Pattern A+ (wrapper s�
 ├── Variants : size(SM|MD|LG) × state(Default|Hover|Focus|Disabled) × status(None|Error|Warning|Success) × open(false|true)
 ├── Auto Layout vertical, gap=4
 ├── Trigger (horizontal)
-│   ├── même structure que text field
+│   ├── same structure as text field
 │   ├── ⬦ leading (SlotNode)
 │   ├── [Value] ← Text property
-│   └── Chevron ↓ (vecteur SVG, PAS frame vide)
-├── Dropdown (visible si open=true)
+│   └── Chevron ↓ (SVG vector, NOT an empty frame)
+├── Dropdown (visible if open=true)
 │   ├── Shadow/md, Border/thin, Radius/md
 │   └── SelectOption × 4-5 instances
-├── Helper Text (même pattern que text field)
+├── Helper Text (same pattern as text field)
 ```
 
 ---
@@ -204,19 +204,19 @@ Un seul Component Set par composant. Si > 60 variants → Pattern A+ (wrapper s�
 └── [Label] ← Text
 ```
 
-**⚠️ APPARENCE CHECKED — CRITIQUE** :
-Quand `checked=true`, la box DOIT être **visuellement pleine** avec la couleur primaire.
-Le check mark blanc par-dessus crée le contraste.
+**⚠️ CHECKED APPEARANCE — CRITICAL**:
+When `checked=true`, the box MUST be **visually filled** with the primary color.
+The white check mark on top creates the contrast.
 
 ```javascript
-// ✅ CHECKED = couleur pleine + check mark
+// ✅ CHECKED = solid color + check mark
 if (checked === 'true') {
-  box.fills = [{type:'SOLID', color:{r:0.15, g:0.39, b:0.92}}]; // couleur de base visible
+  box.fills = [{type:'SOLID', color:{r:0.15, g:0.39, b:0.92}}]; // visible base color
   bindFill(box, getColor('Primary/colorPrimary')); // + variable binding
-  box.strokes = []; // PAS de stroke quand checked
+  box.strokes = []; // NO stroke when checked
   // Check mark SVG
   const check = figma.createVector();
-  check.vectorPaths = [{windingRule:'NONZERO', data:'M 3 8 L 7 12 L 13 4'}]; // adapté à la taille
+  check.vectorPaths = [{windingRule:'NONZERO', data:'M 3 8 L 7 12 L 13 4'}]; // adapted to size
   check.strokeWeight = 2;
   check.strokes = [{type:'SOLID', color:{r:1,g:1,b:1}}];
   check.fills = [];
@@ -226,21 +226,21 @@ if (checked === 'true') {
   box.appendChild(check);
 }
 
-// ❌ INTERDIT : box.fills = [] quand checked (invisible !)
-// ❌ INTERDIT : même apparence checked et unchecked
+// ❌ FORBIDDEN: box.fills = [] when checked (invisible!)
+// ❌ FORBIDDEN: same appearance for checked and unchecked
 ```
 │   └── checked : fills={Primary/colorPrimary}, check mark VECTEUR SVG
 └── [Label] ← Text
 ```
 
-**⚠️ Le check mark DOIT être un vecteur SVG, PAS un caractère texte "✓".**
+**⚠️ The check mark MUST be an SVG vector, NOT a text character "✓".**
 
 ```javascript
 const check = figma.createVector();
 check.vectorPaths = [{ windingRule: "NONZERO", data: "M 1 4.5 L 4.5 8 L 11 1" }];
 check.strokeWeight = 2;
 check.strokes = [{type: 'SOLID', color: {r:1,g:1,b:1}}];
-check.fills = []; // ← OBLIGATOIRE
+check.fills = []; // ← REQUIRED
 check.strokeCap = "ROUND";
 check.strokeJoin = "ROUND";
 ```
@@ -260,17 +260,17 @@ check.strokeJoin = "ROUND";
 └── [Label] ← Text
 ```
 
-**⚠️ APPARENCE SELECTED — CRITIQUE** :
-Quand `selected=true`, le cercle extérieur DOIT être **rempli couleur primaire**.
-Le dot intérieur blanc crée le contraste.
+**⚠️ SELECTED APPEARANCE — CRITICAL**:
+When `selected=true`, the outer circle MUST be **filled with the primary color**.
+The inner white dot creates the contrast.
 
 ```javascript
-// ✅ SELECTED = cercle plein + dot blanc
+// ✅ SELECTED = solid circle + white dot
 if (selected === 'true') {
-  outer.fills = [{type:'SOLID', color:{r:0.15, g:0.39, b:0.92}}]; // couleur de base
+  outer.fills = [{type:'SOLID', color:{r:0.15, g:0.39, b:0.92}}]; // base color
   bindFill(outer, getColor('Primary/colorPrimary')); // + variable
-  outer.strokes = []; // PAS de stroke
-  // Dot blanc
+  outer.strokes = []; // NO stroke
+  // White dot
   const dot = figma.createEllipse();
   dot.resize(dotSize, dotSize);
   dot.fills = [{type:'SOLID', color:{r:1,g:1,b:1}}];
@@ -280,15 +280,15 @@ if (selected === 'true') {
   outer.appendChild(dot);
 }
 
-// ❌ INTERDIT : même apparence selected et unselected
-// Le user DOIT voir une différence nette (plein vs vide)
+// ❌ FORBIDDEN: same appearance for selected and unselected
+// The user MUST see a clear difference (filled vs empty)
 ```
 
 ---
 
 ## 5f — .elements / helper-text
 
-Sous-composant partagé par text field et select :
+Shared sub-component for text field and select:
 
 ```
 🔶 .elements / helper-text (Main Component)
@@ -299,58 +299,58 @@ Sous-composant partagé par text field et select :
 
 ---
 
-## Composants Tier 2+ (si sélectionnés)
+## Tier 2+ Components (if selected)
 
-Même pattern : **un appel MCP par composant**, screenshot après chaque.
+Same pattern: **one MCP call per component**, screenshot after each.
 
-| Composant | Variants principales | Slots |
+| Component | Main Variants | Slots |
 |---|---|---|
 | Card | variant(default\|elevated\|outline) | header, media, content, footer, actions |
 | Modal | size(sm\|md\|lg) | header, content, footer |
 | Tabs | — | tab items |
 | Alert | type(info\|success\|warning\|error) | icon, title, description, action |
 
-### Alert — Spécification détaillée
+### Alert — Detailed Specification
 
 ```
 🔶 alert (Component Set)
 ├── Variants : type(info|success|warning|error)
 ├── Auto Layout HORIZONTAL, gap=12
-│   ├── counterAxisSizingMode = "AUTO" ← ⚠️ CRITIQUE (pas FIXED sinon hauteur 10px !)
+│   ├── counterAxisSizingMode = "AUTO" ← ⚠️ CRITICAL (not FIXED otherwise 10px height!)
 │   ├── primaryAxisSizingMode = "FIXED"
 │   ├── padding: 12/16/12/16
 │   └── cornerRadius = {Radius/md} (ex: 6)
 ├── stripe (Frame 3×FILL)
-│   ├── layoutSizingVertical = "FILL" ← stretch pleine hauteur
+│   ├── layoutSizingVertical = "FILL" ← stretch full height
 │   ├── cornerRadius = 2
-│   └── fills = couleur du type (info=bleu, success=vert, warning=jaune, error=rouge)
+│   └── fills = type color (info=blue, success=green, warning=yellow, error=red)
 ├── Icon Frame (20×20)
-│   └── Vector SVG (icône du type)
+│   └── Vector SVG (type icon)
 └── text-content (Frame vertical, gap=2)
     ├── layoutMode = "VERTICAL"
-    ├── primaryAxisSizingMode = "AUTO" ← ⚠️ CRITIQUE (hug vertical)
+    ├── primaryAxisSizingMode = "AUTO" ← ⚠️ CRITICAL (hug vertical)
     ├── counterAxisSizingMode = "AUTO"
     ├── [Title] ← Text 14px Semi Bold ("Info", "Success", "Warning", "Error")
     └── [Description] ← Text 13px Regular
 ```
 
-**Couleurs par type :**
-| Type | Fill (opacity 8%) | Stripe | Icône |
+**Colors by type:**
+| Type | Fill (opacity 8%) | Stripe | Icon |
 |---|---|---|---|
-| info | bleu primaire | bleu primaire | ℹ️ vecteur SVG |
-| success | vert | vert | ✅ vecteur SVG |
-| warning | jaune | jaune | ⚠️ vecteur SVG |
-| error | rouge | rouge | ❗ vecteur SVG |
+| info | primary blue | primary blue | ℹ️ SVG vector |
+| success | green | green | ✅ SVG vector |
+| warning | yellow | yellow | ⚠️ SVG vector |
+| error | red | red | ❗ SVG vector |
 
-**⚠️ BUGS CONNUS À ÉVITER :**
-1. `counterAxisSizingMode = "FIXED"` → hauteur 10px, alertes écrasées/chevauchées. **TOUJOURS "AUTO".**
-2. `text-content` avec `primaryAxisSizingMode = "FIXED"` → texte coupé. **TOUJOURS "AUTO".**
-3. `stripe` sans `layoutSizingVertical = "FILL"` → strip minuscule (1px). **TOUJOURS "FILL".**
-4. Après création des variants, **repositionner** tous les enfants du CS avec un gap de 20px et **resize le CS** pour englober tous les variants.
+**⚠️ KNOWN BUGS TO AVOID:**
+1. `counterAxisSizingMode = "FIXED"` → 10px height, crushed/overlapping alerts. **ALWAYS "AUTO".**
+2. `text-content` with `primaryAxisSizingMode = "FIXED"` → clipped text. **ALWAYS "AUTO".**
+3. `stripe` without `layoutSizingVertical = "FILL"` → tiny strip (1px). **ALWAYS "FILL".**
+4. After variant creation, **reposition** all CS children with 20px gap and **resize the CS** to encompass all variants.
 
 ```javascript
-// ⚠️ OBLIGATOIRE après création du Component Set alert
-// Les variants sont empilées à y=0 par défaut → les repositionner
+// ⚠️ REQUIRED after creating the alert Component Set
+// Variants are stacked at y=0 by default → reposition them
 let currentY = 0;
 for (const v of alertCS.children) {
   v.x = 0;
@@ -370,17 +370,17 @@ alertCS.resize(480, currentY - 20);
 
 ## Checklist
 
-- [ ] Chaque composant créé dans un appel MCP séparé
-- [ ] Screenshot vérifié après chaque composant
-- [ ] Toutes les dimensions liées aux variables Size (aucun px hardcodé)
-- [ ] **TOUTES les couleurs liées aux variables sémantiques (aucun hex hardcodé)**
-- [ ] **Fonds blancs (input-row, trigger, card, modal) → Neutral/colorBgElevated**
-- [ ] **Icônes noires → Neutral/colorText**
-- [ ] **Check marks / dots blancs → Neutral/colorBg**
-- [ ] Strokes visibles sur text field et select (tous variants)
-- [ ] Check mark = vecteur SVG (pas caractère texte)
-- [ ] SlotNode natifs (createSlot) pour leading/trailing
-- [ ] Alert : counterAxisSizingMode="AUTO" + text-content primaryAxisSizingMode="AUTO" + stripe FILL
-- [ ] Alert : variants repositionnées avec gap 20px + CS resize après création
-- [ ] Showcase Alert : instances en layoutSizingHorizontal="FILL" (pas FIXED à 480px)
-- [ ] **Test Dark mode : créer un frame avec setExplicitVariableModeForCollection → vérifier visuellement**
+- [ ] Each component created in a separate MCP call
+- [ ] Screenshot verified after each component
+- [ ] All dimensions bound to Size variables (no hardcoded px)
+- [ ] **ALL colors bound to semantic variables (no hardcoded hex)**
+- [ ] **White backgrounds (input-row, trigger, card, modal) → Neutral/colorBgElevated**
+- [ ] **Black icons → Neutral/colorText**
+- [ ] **White check marks / dots → Neutral/colorBg**
+- [ ] Strokes visible on text field and select (all variants)
+- [ ] Check mark = SVG vector (not text character)
+- [ ] Native SlotNodes (createSlot) for leading/trailing
+- [ ] Alert: counterAxisSizingMode="AUTO" + text-content primaryAxisSizingMode="AUTO" + stripe FILL
+- [ ] Alert: variants repositioned with 20px gap + CS resize after creation
+- [ ] Showcase Alert: instances with layoutSizingHorizontal="FILL" (not FIXED at 480px)
+- [ ] **Dark mode test: create a frame with setExplicitVariableModeForCollection → verify visually**

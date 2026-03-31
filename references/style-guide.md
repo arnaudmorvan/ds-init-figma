@@ -1,42 +1,42 @@
-# Style Guide — Convention visuelle ds-init
+# Style Guide — ds-init Visual Conventions
 
-> Conventions esthétiques inspirées de SlothUI. Ce ne sont PAS des règles critiques
-> mais des recommandations pour un rendu professionnel cohérent.
+> Visual conventions inspired by SlothUI. These are NOT critical rules
+> but recommendations for a consistent professional result.
 
-## Dimensions de page
+## Page Dimensions
 
-- **Largeur page** : 2000px
-- **Largeur contenu** : 1952px (page - padding 24×2)
-- **Largeur contenu indenté** : 1776px (pour les sections sous le header, padding supplémentaire 88px)
-- **Gap entre sections** : 80px
-- **Gap entre éléments internes** : 24-32px
+- **Page width**: 2000px
+- **Content width**: 1952px (page - 24×2 padding)
+- **Indented content width**: 1776px (for sections under the header, additional 88px padding)
+- **Gap between sections**: 80px
+- **Gap between internal elements**: 24-32px
 
 ## Header (.documentation header)
 
 - cornerRadius = 40
 - border = 1px `{Neutral/colorBorder}`
-- Gradient décoratif : ellipse ~1150×1150, position hors-cadre, gradient radial `{Primary/colorPrimary}` → transparent, opacity=0.08
-- Titre : 60px ExtraBold
-- Badge catégorie : pill rempli `{Primary/colorPrimary}`, texte blanc, cornerRadius=999
-- Breadcrumbs : logo DS 40×40 + niveaux 18px Bold
+- Decorative gradient: ellipse ~1150×1150, off-frame position, radial gradient `{Primary/colorPrimary}` → transparent, opacity=0.08
+- Title: 60px ExtraBold
+- Category badge: filled pill `{Primary/colorPrimary}`, white text, cornerRadius=999
+- Breadcrumbs: DS logo 40×40 + levels 18px Bold
 
 ## Footer (_DesignSystemFooter)
 
-- Même style arrondi que le header (cornerRadius=40)
-- Gradient décoratif miroir
-- Logo + tagline + lien
-- Largeur = FILL dans le parent
+- Same rounded style as the header (cornerRadius=40)
+- Mirrored decorative gradient
+- Logo + tagline + link
+- Width = FILL in parent
 
-## Barres de section (_SectionMetadata)
+## Section Bars (_SectionMetadata)
 
-- Hauteur 38px
-- Label gauche : 14px SemiBold
-- Specs droite : 13px Regular, gris secondaire
-- Ligne pointillée au milieu : FILL, dashPattern=[4,4]
+- Height 38px
+- Left label: 14px SemiBold
+- Right specs: 13px Regular, secondary gray
+- Dashed line in the middle: FILL, dashPattern=[4,4]
 
-## Labels de showcase
+## Showcase Labels
 
-Chaque groupe de variants DOIT être précédé d'un titre visuel :
+Each variant group MUST be preceded by a visual title:
 
 ```
 Frame section (Auto Layout vertical, gap=12)
@@ -45,11 +45,11 @@ Frame section (Auto Layout vertical, gap=12)
 └── Row content (Auto Layout horizontal, gap=16, wrap)
 ```
 
-## Emoji-préfixes des pages
+## Page Emoji Prefixes
 
 ```
 📄 👋 Welcome
-📄 ---                       ← Séparateur
+📄 ---                       ← Separator
 📄 🧱 Foundations
 📄 ⚙️ Icons
 📄 ---
@@ -59,49 +59,49 @@ Frame section (Auto Layout vertical, gap=12)
 📄 🔒 _Components
 ```
 
-- Emoji-préfixes sur les pages système (Foundations, Icons, Layouts, Welcome)
-- PAS d'emoji sur les pages composants (buttons, inputs…) — minuscule
+- Emoji prefixes on system pages (Foundations, Icons, Layouts, Welcome)
+- NO emoji on component pages (buttons, inputs…) — lowercase
 
-## Nommage
+## Naming
 
-| Type | Convention | Exemple |
+| Type | Convention | Example |
 |------|-----------|---------|
-| Composant public | minuscule, sans préfixe | `button`, `checkbox` |
-| Sous-composant | `.elements / parent / name` | `.elements / select / option` |
+| Public component | lowercase, no prefix | `button`, `checkbox` |
+| Sub-component | `.elements / parent / name` | `.elements / select / option` |
 | Documentation | `.documentation header` | Component Set, 3 variants |
 | Footer | `_DesignSystemFooter` | Main Component |
 | Section divider | `_SectionMetadata` | Main Component |
-| Slot natif | nom simple | `header`, `leading`, `content` |
-| Collection variable | PascalCase | `Color`, `Typography`, `Size` |
+| Native slot | simple name | `header`, `leading`, `content` |
+| Variable collection | PascalCase | `Color`, `Typography`, `Size` |
 | Variable | `Category/tokenName` | `Primary/colorPrimary`, `Size/controlHeight/md` |
 
-## Composition showcase
+## Composition Showcase
 
-Après les sections de variants, ajouter une section "COMPOSITION" montrant l'usage réel :
+After variant sections, add a "COMPOSITION" section showing real usage:
 
 ```
 Frame "Composition" (Auto Layout vertical, gap=16)
 ├── Label "COMPOSITION" (14px SemiBold UPPERCASE)
 ├── Divider (1px)
-└── Frame contexte (padding=24, cornerRadius=12,
+└── Context frame (padding=24, cornerRadius=12,
     fills=colorBgSecondary, border 1px colorBorder)
-    └── Agencement réaliste de composants combinés
+    └── Realistic arrangement of combined components
 ```
 
-## Welcome page
+## Welcome Page
 
-- PAS D'EMOJIS — formes géométriques + couleurs DS uniquement
-- Sections : Hero, Stats, Features, Components Highlight, Navigation rapide, Config
-- Cards avec fond visible (`colorBgSecondary` + border) — jamais transparentes
+- NO EMOJIS — geometric shapes + DS colors only
+- Sections: Hero, Stats, Features, Components Highlight, Quick Navigation, Config
+- Cards with visible background (`colorBgSecondary` + border) — never transparent
 
-## Couleurs slots (page Layouts)
+## Slot Colors (Layouts Page)
 
-Les SlotNode sont invisibles par défaut. Sur la page Layouts, les colorier :
+SlotNodes are invisible by default. On the Layouts page, color them:
 
-| Slot | Couleur | Hex |
-|------|---------|-----|
-| header / topbar | rose clair | #FFE0ED |
-| sidebar / nav | violet clair | #EBE0FF |
-| content / main | bleu clair | #E0F0FF |
-| footer | vert clair | #E0FFED |
-| secondaires | jaune clair | #FFF8E0 |
+| Slot | Color | Hex |
+|------|-------|-----|
+| header / topbar | light pink | #FFE0ED |
+| sidebar / nav | light purple | #EBE0FF |
+| content / main | light blue | #E0F0FF |
+| footer | light green | #E0FFED |
+| secondary | light yellow | #FFF8E0 |

@@ -1,19 +1,19 @@
-# Phase 3 — Layouts et Templates
+# Phase 3 — Layouts and Templates
 
-> **Appels MCP** : 3× `mcp_figma_use_figma` (1 layout components, 1 templates, 1 page Layouts)
-> **Prérequis** : Phase 1 (variables) + Phase 2 (doc components)
-> **Produit** : Layout/Template Components sur 🔒 _Components + Page 🏗️ Layouts
-> **Vérification** : Screenshot de _Components + Screenshot page Layouts
+> **MCP Calls**: 3× `mcp_figma_use_figma` (1 layout components, 1 templates, 1 Layouts page)
+> **Prerequisites**: Phase 1 (variables) + Phase 2 (doc components)
+> **Output**: Layout/Template Components on 🔒 _Components + 🏗️ Layouts Page
+> **Verification**: Screenshot of _Components + Screenshot of Layouts page
 
-## ⛔ RÈGLE — PAS de createSlot()
+## ⛔ RULE — NO createSlot()
 
-`createSlot()` **N'EXISTE PAS** dans le Plugin API Figma. L'appeler silencieusement échoue
-et produit des composants **vides**.
+`createSlot()` **DOES NOT EXIST** in the Figma Plugin API. Calling it silently fails
+and produces **empty** components.
 
-Les "slots" sont des **frames colorées nommées** à l'intérieur des composants.
-L'utilisateur remplace ces frames par son propre contenu après instanciation.
+"Slots" are **colored named frames** inside components.
+The user replaces these frames with their own content after instantiation.
 
-### Helper createSlotFrame
+### createSlotFrame Helper
 
 ```javascript
 // Couleurs de slots (voir style-guide.md)
@@ -43,11 +43,11 @@ function createSlotFrame(name, opts = {}) {
   slot.cornerRadius = 4;
   slot.paddingTop = 8; slot.paddingBottom = 8;
   slot.paddingLeft = 8; slot.paddingRight = 8;
-  // Dimensions par défaut (à override après appendChild)
+  // Default dimensions (override after appendChild)
   if (opts.width) slot.resize(opts.width, opts.height || 40);
   else slot.resize(200, opts.height || 40);
 
-  // Label dans le slot
+  // Label inside the slot
   const label = figma.createText();
   label.characters = name;
   label.fontSize = 11;
@@ -60,13 +60,13 @@ function createSlotFrame(name, opts = {}) {
 }
 ```
 
-**Usage** : après `parent.appendChild(slot)`, appliquer `layoutSizingHorizontal = "FILL"` etc.
+**Usage**: after `parent.appendChild(slot)`, apply `layoutSizingHorizontal = "FILL"` etc.
 
-## Appel 3a — Layout Components (sur _Components)
+## Call 3a — Layout Components (on _Components)
 
-> 4 Main Components, chacun enfant direct de la page _Components.
+> 4 Main Components, each a direct child of the _Components page.
 
-### Charger les fonts d'abord ⚠️
+### Load fonts first ⚠️
 
 ```javascript
 await figma.loadFontAsync({ family: 'Inter', style: 'Medium' });
@@ -164,7 +164,7 @@ compPage.appendChild(sectionLayout);
 
 ```
 Variants: direction=horizontal|vertical × gap=sm|md|lg (6 variants)
-Chaque variant = auto layout (direction) avec slot "children" FILL
+Each variant = auto layout (direction) with "children" slot FILL
 ```
 
 ```javascript
@@ -194,7 +194,7 @@ stackSet.name = "StackLayout";
 
 ```
 Variants: columns=1|2|3|4 × gap=sm|md|lg (12 variants)
-Auto Layout wrap, slots enfants avec largeur calculée
+Auto Layout wrap, child slots with calculated width
 ```
 
 ```javascript
@@ -212,11 +212,11 @@ for (const cols of [1, 2, 3, 4]) {
     comp.counterAxisSpacing = gapVal;
     comp.fills = [];
     comp.clipsContent = false;
-    // Créer `cols` slots pour montrer la grille
+      // Create `cols` slots to show the grid
     for (let i = 0; i < cols; i++) {
       const cell = createSlotFrame(`cell-${i+1}`, {height: 80});
       comp.appendChild(cell);
-      // Largeur proportionnelle approximative
+      // Approximate proportional width
       const cellWidth = Math.floor((800 - (cols - 1) * gapVal) / cols);
       cell.resize(cellWidth, 80);
     }
@@ -227,28 +227,28 @@ const gridSet = figma.combineAsVariants(gridVariants, compPage);
 gridSet.name = "GridLayout";
 ```
 
-→ **Screenshot** de _Components après cet appel.
+→ **Screenshot** of _Components after this call.
 
-## Appel 3b — Templates (sur _Components, selon config utilisateur)
+## Call 3b — Templates (on _Components, based on user config)
 
-> Chaque template = 1 Component, enfant direct de `_Components`.
-> Les templates utilisent les mêmes `createSlotFrame()`.
+> Each template = 1 Component, direct child of `_Components`.
+> Templates use the same `createSlotFrame()`.
 
-### Templates SaaS
+### SaaS Templates
 
-Chaque template fait **1440×900** et utilise les variables DS + slots colorés.
+Each template is **1440×900** and uses DS variables + colored slots.
 
 **dashboard** :
 ```
 Component "template/dashboard", 1440×900, HORIZONTAL
 ├── slot "sidebar" — w=240, FILL height, violet
-│   intérieur VERTICAL, gap=16, padding=16
+│   inner VERTICAL, gap=16, padding=16
 │   ├── slot "logo" (h=40, jaune)
 │   ├── slot "nav-items" (FILL, violet)
 │   └── slot "sidebar-footer" (h=40, vert)
 ├── Frame "main" — VERTICAL, FILL both
 │   ├── slot "topbar" — h=64, FILL width, rose
-│   │   intérieur HORIZONTAL, centerV, padding-h=16, gap=16
+│   │   inner HORIZONTAL, centerV, padding-h=16, gap=16
 │   │   ├── slot "breadcrumb" (FILL, jaune)
 │   │   ├── slot "search" (w=240, jaune)
 │   │   └── slot "actions" (w=120, jaune)
@@ -259,67 +259,67 @@ Component "template/dashboard", 1440×900, HORIZONTAL
 │       └── slot "secondary-content" (h=200, jaune)
 ```
 
-**settings** : Même sidebar + topbar. Content = HORIZONTAL :
+**settings**: Same sidebar + topbar. Content = HORIZONTAL:
 - slot "settings-menu" (w=220, violet)
 - slot "form" (FILL, bleu)
 
-**list-detail** : Même sidebar + topbar. Content = HORIZONTAL :
+**list-detail**: Same sidebar + topbar. Content = HORIZONTAL:
 - slot "list-panel" (w=380, violet)
 - slot "detail-panel" (FILL, bleu)
 
-**table** : Même sidebar + topbar. Content = VERTICAL :
+**table**: Same sidebar + topbar. Content = VERTICAL:
 - slot "table-header" (h=48, rose)
 - slot "table-content" (FILL, bleu)
 - slot "table-pagination" (h=48, vert)
 
-**profile** : Même sidebar + topbar. Content = VERTICAL :
+**profile**: Same sidebar + topbar. Content = VERTICAL:
 - slot "profile-header" (h=200, rose)
 - slot "profile-tabs" (h=48, jaune)
 - slot "profile-content" (FILL, bleu)
 
-**onboarding** : VERTICAL centré, pas de sidebar :
+**onboarding**: VERTICAL centered, no sidebar:
 - slot "logo-bar" (h=64, FILL width, rose)
 - Frame "step-container" (w=640, centered, FILL height, gap=32)
   - slot "step-header" (h=48, rose)
   - slot "step-content" (FILL, bleu)
   - slot "step-actions" (h=56, vert)
 
-### Templates Landing
+### Landing Templates
 
-Sections empilées verticalement, **1440px** de large, HUG vertical.
+Sections stacked vertically, **1440px** wide, HUG vertical.
 
 **hero** (Component Set, layout=centered|split) :
 - `layout=centered` : VERTICAL centré, gap=24, padding=80, slots badge/headline/subheadline/cta-row/hero-visual empilés
-- `layout=split` : HORIZONTAL, gap=48, padding=80, left-col (VERTICAL, FILL) avec slots texte, right-col slot hero-visual (FILL)
+- `layout=split` : HORIZONTAL, gap=48, padding=80, left-col (VERTICAL, FILL) with text slots, right-col slot hero-visual (FILL)
 
 **features** (Component Set, columns=3|4) :
-- slot "section-header" (FILL, rose)
-- Grid HORIZONTAL wrap avec slots "feature-1" à "feature-N" (taille calculée)
+- slot "section-header" (FILL, pink)
+- Grid HORIZONTAL wrap with "feature-1" to "feature-N" slots (calculated size)
 
 **pricing** (Component) :
-- slot "section-header" (rose)
-- Row HORIZONTAL gap=24 : slot "plan-1" / "plan-2" / "plan-3" (FILL, bleu)
+- slot "section-header" (pink)
+- Row HORIZONTAL gap=24 : slot "plan-1" / "plan-2" / "plan-3" (FILL, blue)
 
 **testimonials** (Component Set, layout=grid|single-featured) :
-- slot "section-header" (rose)
-- `grid` : 3 slots testimonial en row wrap
-- `single-featured` : 1 slot featured (large) + 2 slots small en colonne
+- slot "section-header" (pink)
+- `grid` : 3 testimonial slots in row wrap
+- `single-featured` : 1 large featured slot + 2 small slots in column
 
 **cta-banner** (Component) :
-- Background Primary/colorPrimary, padding=64, centré
-- slot "headline" (jaune), slot "description" (jaune), slot "cta-row" (jaune)
+- Background Primary/colorPrimary, padding=64, centered
+- slot "headline" (yellow), slot "description" (yellow), slot "cta-row" (yellow)
 
 **landing-footer** (Component) :
 - VERTICAL, gap=32
 - Row top HORIZONTAL : slot "brand-col" + "links-col-1" / "links-col-2" / "links-col-3"
 - Row bottom HORIZONTAL : slot "copyright" + "legal-links"
 
-→ **Screenshot** de _Components et vérification.
+→ **Screenshot** of _Components and verification.
 
-## Appel 3c — Page 🏗️ Layouts
+## Call 3c — 🏗️ Layouts Page
 
-> **Page de présentation**, PAS des Main Components.
-> Instancie ou affiche visuellement les layouts/templates avec leurs slots colorés.
+> **Presentation page**, NOT Main Components.
+> Instantiates or visually displays layouts/templates with their colored slots.
 
 ### Structure
 
@@ -328,60 +328,60 @@ Frame principal (2000px, Auto Layout vertical, gap=80, padding=24)
 ├── .documentation header (type=documentation, badge "Structure", title "Layouts & Templates")
 │
 ├── Section "Layouts" (VERTICAL, gap=48)
-│   ├── Titre "Layouts" (32px Bold)
+│   ├── Title "Layouts" (32px Bold)
 │   │
-│   ├── Sous-section "PageLayout"
-│   │   ├── Nom 16px SemiBold
-│   │   ├── Description 14px Regular : "Structure page complète avec header/sidebar/content/footer"
-│   │   └── Instance de PageLayout (ou frame démonstrative 1:2 scale)
+│   ├── Subsection "PageLayout"
+│   │   ├── Name 16px SemiBold
+│   │   ├── Description 14px Regular : "Full page structure with header/sidebar/content/footer"
+│   │   └── PageLayout instance (or demo frame at 1:2 scale)
 │   │
-│   ├── Sous-section "SectionLayout"
-│   │   ├── Nom + description
-│   │   └── Instance ou copie visuelle
+│   ├── Subsection "SectionLayout"
+│   │   ├── Name + description
+│   │   └── Instance or visual copy
 │   │
-│   ├── Sous-section "StackLayout"
-│   │   ├── Nom + description
-│   │   └── Row d'exemples (horizontal + vertical, gap=sm/md)
+│   ├── Subsection "StackLayout"
+│   │   ├── Name + description
+│   │   └── Row of examples (horizontal + vertical, gap=sm/md)
 │   │
-│   └── Sous-section "GridLayout"
-│       ├── Nom + description
-│       └── Exemples columns=2 et columns=3
+│   └── Subsection "GridLayout"
+│       ├── Name + description
+│       └── Examples columns=2 and columns=3
 │
-├── Section "Templates SaaS" (VERTICAL, gap=48)
-│   ├── Titre "Templates SaaS" (32px Bold)
-│   └── Pour chaque template config :
-│       ├── Nom 16px SemiBold
+├── Section "SaaS Templates" (VERTICAL, gap=48)
+│   ├── Title "SaaS Templates" (32px Bold)
+│   └── For each template config:
+│       ├── Name 16px SemiBold
 │       ├── Description 14px Regular
-│       └── Instance à échelle réduite (scale 0.5 ou dans un frame 720×450)
+│       └── Scaled-down instance (scale 0.5 or in a 720×450 frame)
 │
-├── Section "Templates Landing" (VERTICAL, gap=48)
-│   ├── Titre "Templates Landing" (32px Bold)
-│   └── Pour chaque template landing config :
-│       ├── Nom 16px SemiBold
-│       └── Instance ou frame démonstrative
+├── Section "Landing Templates" (VERTICAL, gap=48)
+│   ├── Title "Landing Templates" (32px Bold)
+│   └── For each landing template config:
+│       ├── Name 16px SemiBold
+│       └── Instance or demo frame
 │
 └── _DesignSystemFooter
 ```
 
-### Pattern d'instanciation pour la page
+### Instantiation Pattern for the Page
 
 ```javascript
-// Trouver le composant par nom
+// Find the component by name
 const allComponents = compPage.children.filter(c =>
   c.type === 'COMPONENT' || c.type === 'COMPONENT_SET'
 );
 
-// Pour un Component simple
+// For a simple Component
 const pageLayoutComp = allComponents.find(c => c.name === 'PageLayout');
 if (pageLayoutComp) {
   const inst = pageLayoutComp.createInstance();
-  // Scale down pour la page de présentation (optionnel)
+  // Scale down for the presentation page (optional)
   inst.resize(720, 450);
   section.appendChild(inst);
   inst.layoutSizingHorizontal = "FILL";
 }
 
-// Pour un Component Set — instancier un variant spécifique
+// For a Component Set — instantiate a specific variant
 const stackSet = allComponents.find(c => c.name === 'StackLayout');
 if (stackSet && stackSet.type === 'COMPONENT_SET') {
   const variant = stackSet.children.find(c => c.name === 'direction=horizontal, gap=md');
@@ -393,17 +393,17 @@ if (stackSet && stackSet.type === 'COMPONENT_SET') {
 }
 ```
 
-→ **Screenshot** page 🏗️ Layouts pour vérification.
+→ **Screenshot** of 🏗️ Layouts page for verification.
 
-## Utilisation des templates (pour d'autres phases)
+## Using Templates (for other phases)
 
-Les templates DOIVENT être détachés avant de remplir les slots :
+Templates MUST be detached before filling the slots:
 
 ```javascript
 const inst = templateComponent.createInstance();
-const frame = inst.detachInstance(); // → frame éditable
+const frame = inst.detachInstance(); // → editable frame
 
-// Trouver un slot par nom (recherche récursive)
+// Find a slot by name (recursive search)
 function findSlot(node, name) {
   if (node.name === name) return node;
   if (children in node) for (const c of node.children) {
@@ -414,20 +414,20 @@ function findSlot(node, name) {
 }
 
 const slot = findSlot(frame, 'content');
-// Remplacer le contenu du slot
-slot.children.forEach(c => c.remove()); // supprimer le label placeholder
-// Maintenant appendChild fonctionne
+// Replace slot content
+slot.children.forEach(c => c.remove()); // remove placeholder label
+// Now appendChild works
 myContent.forEach(child => slot.appendChild(child));
 ```
 
 ## Checklist
 
-- [ ] Fonts chargées (Inter Medium, Regular)
-- [ ] createSlotFrame() helper défini (frames colorées avec label)
-- [ ] 4 Layout Components créés sur _Components (PageLayout, SectionLayout, StackLayout CS, GridLayout CS)
-- [ ] Chaque Component = enfant direct de la page _Components (règle #16)
-- [ ] Templates SaaS créés sur _Components (selon config)
-- [ ] Templates Landing créés sur _Components (selon config)
-- [ ] Page 🏗️ Layouts avec instances/previews de chaque layout + template
-- [ ] Slots visibles avec couleurs (rose/violet/bleu/vert/jaune)
-- [ ] Screenshots vérifiés (_Components + page Layouts)
+- [ ] Fonts loaded (Inter Medium, Regular)
+- [ ] createSlotFrame() helper defined (colored frames with label)
+- [ ] 4 Layout Components created on _Components (PageLayout, SectionLayout, StackLayout CS, GridLayout CS)
+- [ ] Each Component = direct child of the _Components page (rule #16)
+- [ ] SaaS Templates created on _Components (based on config)
+- [ ] Landing Templates created on _Components (based on config)
+- [ ] 🏗️ Layouts page with instances/previews of each layout + template
+- [ ] Slots visible with colors (pink/purple/blue/green/yellow)
+- [ ] Screenshots verified (_Components + Layouts page)
