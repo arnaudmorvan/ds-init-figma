@@ -45,41 +45,139 @@ Suivre les conventions visuelles de [references/style-guide.md](copilot-skill:/d
 > Si le user dit "défauts" ou "peu importe", utiliser les valeurs par défaut.
 > Mais TOUJOURS poser les questions d'abord — ne JAMAIS démarrer silencieusement.
 
-**Stratégie** : `vscode_askQuestions` si dispo, sinon chat en 3 rounds courts.
-
 **Si le user fournit déjà un lien Figma + des specs** → extraire les infos du message et confirmer.
 **Si le user dit juste "lance un init"** → poser les questions ci-dessous AVANT de créer quoi que ce soit.
 
-### Round 1 — Identité visuelle
+### Méthode : TOUJOURS utiliser `vscode_askQuestions`
 
-| Question | Options (défauts en gras) |
-|---|---|
-| Nom du DS | libre |
-| Plateforme | **Web** · Mobile · Desktop · Multi |
-| Police | **Inter** · DM Sans · Plus Jakarta Sans · autre |
-| Couleur primaire (hex) | ex: #2563EB |
-| Couleur secondaire (hex) | ex: #7C3AED |
+Appeler `vscode_askQuestions` avec le JSON ci-dessous. C'est **obligatoire** à chaque init — ne jamais poser les questions en chat.
 
-### Round 2 — Style & Structure
+```json
+[
+  {
+    "header": "Nom du DS",
+    "question": "Quel nom pour le Design System ?"
+  },
+  {
+    "allowFreeformInput": false,
+    "header": "Plateforme",
+    "options": [
+      { "label": "Web", "recommended": true },
+      { "label": "Mobile" },
+      { "label": "Desktop" },
+      { "label": "Multi" }
+    ],
+    "question": "Quelle plateforme cible ?"
+  },
+  {
+    "allowFreeformInput": true,
+    "header": "Police",
+    "options": [
+      { "label": "Inter", "recommended": true },
+      { "label": "DM Sans" },
+      { "label": "Plus Jakarta Sans" }
+    ],
+    "question": "Quelle police principale ?"
+  },
+  {
+    "header": "Couleur primaire",
+    "question": "Couleur primaire (hex) ? Ex: #2563EB"
+  },
+  {
+    "header": "Couleur secondaire",
+    "question": "Couleur secondaire (hex) ? Ex: #7C3AED"
+  },
+  {
+    "allowFreeformInput": false,
+    "header": "Arrondis",
+    "options": [
+      { "description": "0-2px", "label": "Sharp" },
+      { "description": "4-8px", "label": "Soft", "recommended": true },
+      { "description": "12-24px", "label": "Round" },
+      { "description": "999px", "label": "Full" }
+    ],
+    "question": "Style d'arrondis ?"
+  },
+  {
+    "allowFreeformInput": false,
+    "header": "Ombres",
+    "options": [
+      { "label": "Subtiles", "recommended": true },
+      { "label": "Marquées" },
+      { "label": "Glow" }
+    ],
+    "question": "Style d'ombres ?"
+  },
+  {
+    "allowFreeformInput": false,
+    "header": "Dark mode",
+    "options": [
+      { "label": "Oui", "recommended": true },
+      { "label": "Non" },
+      { "label": "Plus tard" }
+    ],
+    "question": "Support du Dark mode ?"
+  },
+  {
+    "allowFreeformInput": false,
+    "header": "Spacing base",
+    "options": [
+      { "label": "4px", "recommended": true },
+      { "label": "8px" }
+    ],
+    "question": "Unité de spacing de base ?"
+  },
+  {
+    "allowFreeformInput": false,
+    "header": "Composants",
+    "options": [
+      { "description": "Button, Input, Select, Checkbox, Radio", "label": "Tier 1", "recommended": true },
+      { "description": "+ Card, Modal, Tabs, Alert, Badge", "label": "Tier 2" },
+      { "description": "Tous les composants avancés", "label": "Tier 3+" }
+    ],
+    "question": "Quels tiers de composants ?"
+  },
+  {
+    "allowFreeformInput": false,
+    "header": "Templates SaaS",
+    "multiSelect": true,
+    "options": [
+      { "label": "Dashboard", "recommended": true },
+      { "label": "Settings" },
+      { "label": "List/Detail" },
+      { "label": "Table" },
+      { "label": "Profile" },
+      { "label": "Onboarding" }
+    ],
+    "question": "Quels templates SaaS inclure ?"
+  },
+  {
+    "allowFreeformInput": false,
+    "header": "Templates Landing",
+    "multiSelect": true,
+    "options": [
+      { "label": "Hero", "recommended": true },
+      { "label": "Features" },
+      { "label": "Pricing" },
+      { "label": "Testimonials" },
+      { "label": "CTA Banner" },
+      { "label": "Footer" }
+    ],
+    "question": "Quels templates Landing inclure ?"
+  },
+  {
+    "allowFreeformInput": false,
+    "header": "Doc header",
+    "options": [
+      { "label": "Oui", "recommended": true },
+      { "label": "Non" }
+    ],
+    "question": "Inclure les composants Doc Header sur les pages ?"
+  }
+]
+```
 
-| Question | Options |
-|---|---|
-| Arrondis | Sharp (0-2) · **Soft (4-8)** · Round (12-24) · Full (999) |
-| Ombres | **Subtiles** · Marquées · Glow |
-| Dark mode | **Oui** · Non · Plus tard |
-| Organisation | **Tous sur une page** · Une page/composant · Hybride |
-| Spacing base | **4px** · 8px |
-
-### Round 3 — Composants & Templates
-
-| Question | Options |
-|---|---|
-| Composants | **Tier 1** (Button, Input, Select, Checkbox, Radio) · Tier 2 (Card, Modal, Tabs, Alert, Badge) · Tier 3-5 |
-| Templates SaaS | **Dashboard** · Settings · List/Detail · Table · Profile · Onboarding |
-| Templates Landing | **Hero** · Features · Pricing · Testimonials · CTA Banner · Footer |
-| Doc header | **Oui** · Non |
-
-> Réponse rapide : "défauts" pour tout accepter.
+> Si le user annule le formulaire → lui demander en chat en dernier recours.
 
 **Valeurs par défaut silencieuses** (pas demandées) :
 - Échelle typo : Mineure tierce 1.2
@@ -103,6 +201,7 @@ Suivre les conventions visuelles de [references/style-guide.md](copilot-skill:/d
 | 6. Foundations | [phases/06-foundations.md](copilot-skill:/ds-init/phases/06-foundations.md) | 1 par section | Page Foundations (Colors, Typo, Size…) |
 | 7. Showcase | [phases/07-showcase.md](copilot-skill:/ds-init/phases/07-showcase.md) | 1 par composant | Page Components (Light + Dark) |
 | 8. Welcome | [phases/08-welcome.md](copilot-skill:/ds-init/phases/08-welcome.md) | 1-2 use | Page Welcome |
+| 9. Examples | [phases/09-examples.md](copilot-skill:/ds-init/phases/09-examples.md) | 4 use | Page Examples (Login, Dashboard, Settings, User List) |
 
 ### Workflow d'exécution
 
@@ -134,7 +233,9 @@ Phase 1 (Setup) ─────────┬──→ Phase 2 (Doc Components)
                           │
                           ├──→ Phase 7 (Showcase) ←── Phase 2 + 4 + 5
                           │
-                          └──→ Phase 8 (Welcome) ←── Phase 2 + 5
+                          ├──→ Phase 8 (Welcome) ←── Phase 2 + 5
+                          │
+                          └──→ Phase 9 (Examples) ←── Phase 2 + 5
 ```
 
 **Parallélisable** : Phases 3 et 4 peuvent tourner indépendamment après Phase 1+2.
@@ -154,6 +255,7 @@ Phase 1 (Setup) ─────────┬──→ Phase 2 (Doc Components)
 | `⚙️ Icons` | Grille d'icônes catégorisée |
 | `🏗️ Layouts` | Présentation des layouts/templates avec slots colorés |
 | `Components` | Instances showcase Light + Dark |
+| `📐 Examples` | Pages d'exemples composées (Login, Dashboard, Settings, User List) |
 
 ---
 
