@@ -1,7 +1,7 @@
 ---
 name: ds-init
-description: "Create a Design System in Figma. USE WHEN: project kickoff, Figma DS creation, setting up variables/tokens, creating Figma components, structuring pages. Asks configuration questions (fonts, colors, radii, shadows, spacing, breakpoints) then creates the Figma file with variables and components."
-argument-hint: "Project name (e.g. MyApp DS)"
+description: "Create a Design System in Figma. USE WHEN: project kickoff, Figma DS creation, setting up variables/tokens, creating Figma components, structuring pages. Also supports partial execution: adding a single component, generating a specific page, or running a specific phase on an existing DS file."
+argument-hint: "Project name OR Figma link + task (e.g. 'MyApp DS', 'add a Tabs component to <figma-link>', 'generate examples page on <figma-link>')"
 ---
 
 # DS Init — Create a Design System in Figma
@@ -10,6 +10,8 @@ argument-hint: "Project name (e.g. MyApp DS)"
 
 Create a complete Design System in Figma through a **modular and verified** execution.
 Each phase is self-contained, verified by screenshot, and can be re-run without breaking things.
+
+**This skill supports both full and partial execution** — see Execution Modes below.
 
 **References**:
 - [DS Knowledge Base](copilot-skill:/ds-audit/references/ds-knowledge-base.md) — patterns from audits
@@ -21,6 +23,62 @@ Each phase is self-contained, verified by screenshot, and can be re-run without 
 - `mcp_figma_get_screenshot` — Verify visual output
 
 > **⚠️** `mcp_figma_generate_figma_design` is high-level. For precise control, use `mcp_figma_use_figma`.
+
+---
+
+## Execution Modes
+
+Detect the user's intent and select the appropriate mode:
+
+### Mode 1: `full` — Create a complete DS from scratch
+**Trigger**: "Create a design system", "Initialize a DS", project name without Figma link
+**Flow**: Phase 0 (questions) → Phase 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9
+**Requires**: Nothing (creates a new file)
+
+### Mode 2: `component` — Add a single component to an existing DS
+**Trigger**: "Add a Tabs component", "Create a Modal component", "Build the Alert component"
+**Flow**: Discover existing DS (variables, page structure) → Phase 5 for the specific component → Phase 7 for its showcase
+**Requires**: Figma link to an existing DS file (or ask for it)
+
+| Example prompts | Component | Phases |
+|---|---|---|
+| "Add a Tabs component" | Tabs | 5 (Tabs only) → 7 (Tabs showcase) |
+| "Create Card, Badge, Avatar" | Card, Badge, Avatar | 5 (each) → 7 (each showcase) |
+| "Add all Tier 2 components" | Card, Modal, Tabs, Alert, Badge | 5 (each) → 7 (each showcase) |
+
+### Mode 3: `page` — Generate a specific page
+**Trigger**: "Generate the examples page", "Create the welcome page", "Build foundations"
+**Flow**: Discover existing DS → Run only the relevant phase
+**Requires**: Figma link to an existing DS file with components already created
+
+| Example prompts | Phase |
+|---|---|
+| "Generate the Welcome page" | Phase 8 |
+| "Create the Foundations page" | Phase 6 |
+| "Build example pages" | Phase 9 |
+| "Create the Showcase page" | Phase 7 |
+| "Generate the Icons page" | Phase 4 |
+| "Build layouts and templates" | Phase 3 |
+
+### Mode 4: `phase` — Run a specific phase by number
+**Trigger**: "Run phase 6", "Execute phase 3"
+**Flow**: Run exactly one phase file
+**Requires**: All prerequisites for that phase must exist in the file
+
+### Discovery step (Modes 2, 3, 4)
+
+For partial execution on an existing file, **always start with a discovery step**:
+
+```
+1. get_screenshot of ALL pages to understand current state
+2. Read existing variables (Color, Typography, Size collections)
+3. Read existing Component Sets on 🔒 _Components
+4. Identify what already exists vs what needs to be created
+5. Proceed with the requested phase(s) only
+```
+
+> **⚠️ NEVER re-create** variables, doc components, or Component Sets that already exist.
+> Use `getLocalVariablesAsync()` and `findAll()` to retrieve existing nodes.
 
 ---
 

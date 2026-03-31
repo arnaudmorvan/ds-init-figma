@@ -84,13 +84,30 @@ Place the folder in your skills directory. For GitHub Copilot:
 
 ## How to Trigger It
 
-Use any of these prompts in your AI agent:
+The skill supports **4 execution modes** depending on what you ask:
 
+### Full creation (new DS from scratch)
 - `"Create a design system called MyApp"`
 - `"Initialize a Figma DS for my project"`
 - `"Build a design system with Inter font and blue primary color"`
 
-The skill will ask 13 configuration questions (DS name, platform, font, colors, radius, shadows, dark mode, spacing, component tier, templates) then build the Figma file phase by phase.
+The skill will ask 13 configuration questions then build the Figma file phase by phase.
+
+### Add a component to an existing DS
+- `"Add a Tabs component to <figma-link>"`
+- `"Create Card, Badge, and Avatar components"`
+- `"Add all Tier 2 components to my DS"`
+
+### Generate a specific page
+- `"Generate the Welcome page on <figma-link>"`
+- `"Build the Foundations page"`
+- `"Create example pages (Login, Dashboard, Settings)"`
+
+### Run a specific phase
+- `"Run phase 6 (Foundations)"`
+- `"Execute phase 3 (Layouts)"`
+
+For partial execution, provide a Figma file link. The skill will discover existing content and only create what's missing.
 
 ## Structure
 
