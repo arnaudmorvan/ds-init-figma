@@ -26,11 +26,18 @@ Each phase is verified by screenshot before moving to the next.
 
 > This skill uses the Figma MCP server, not a Figma plugin. The AI agent reads and writes directly to your Figma file through the MCP connection — no plugin panel or Figma Community install required.
 
-## Connecting the Figma MCP Server
+## Installation
 
-### Using VS Code + GitHub Copilot
+### GitHub Copilot (VS Code)
 
-Add to your `.vscode/mcp.json`:
+1. Clone the repo into your skills directory:
+
+```bash
+cd ~/.copilot/skills
+git clone https://github.com/arnaudmorvan/ds-init-figma.git ds-init
+```
+
+2. Add the Figma MCP server to your `.vscode/mcp.json`:
 
 ```json
 {
@@ -46,9 +53,44 @@ Add to your `.vscode/mcp.json`:
 }
 ```
 
-### Using Claude Code (terminal)
+3. The skill is available immediately — no restart needed.
 
-Add to your Claude config file (`~/.claude.json` or `claude_desktop_config.json`):
+### Claude Desktop
+
+1. **Open the Claude Desktop config file:**
+
+```bash
+open ~/Library/Application\ Support/Claude/claude_desktop_config.json
+```
+
+2. **Make sure the Figma MCP server is connected.** Add or verify:
+
+```json
+{
+  "mcpServers": {
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/figma-mcp-server@latest"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "YOUR_FIGMA_ACCESS_TOKEN"
+      }
+    }
+  }
+}
+```
+
+3. **Clone the repo** into your skills directory (find the `skills/user` path in your config):
+
+```bash
+cd /path/to/your/skills/user
+git clone https://github.com/arnaudmorvan/ds-init-figma.git ds-init
+```
+
+4. **Restart Claude Desktop.** Skills are loaded at startup.
+
+### Claude Code (terminal)
+
+1. Add the Figma MCP server to `~/.claude.json`:
 
 ```json
 {
@@ -63,24 +105,14 @@ Add to your Claude config file (`~/.claude.json` or `claude_desktop_config.json`
 }
 ```
 
-Replace `YOUR_FIGMA_ACCESS_TOKEN` with your personal access token.
-
-## Installation
-
-1. Clone the repo
+2. Clone the repo:
 
 ```bash
-git clone https://github.com/arnaudmorvan/ds-init-figma.git
-cd ds-init-figma
+cd ~/.copilot/skills
+git clone https://github.com/arnaudmorvan/ds-init-figma.git ds-init
 ```
 
-2. Add the skill to your AI agent
-
-Place the folder in your skills directory. For GitHub Copilot:
-
-```
-~/.copilot/skills/ds-init/
-```
+> **Figma token:** Go to Figma → Settings → Security → Personal access tokens → Generate new token.
 
 ## How to Trigger It
 
